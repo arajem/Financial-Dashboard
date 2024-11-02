@@ -101,11 +101,21 @@ with tab2:
     }
 
     # Select date range and interval
-    date_range = st.selectbox("Select Date Range", list(date_ranges.keys()))
-    start_date = datetime.now() - date_ranges[date_range] if date_range != "MAX" else None
-    end_date = datetime.now()
+date_range = st.selectbox("Select Date Range", list(date_ranges.keys()))
 
-    interval = st.selectbox("Select Time Interval", ["1d", "1mo", "1y"], index=0)  # Default to "Day"
+# Ensure that the date range calculation works as intended
+if date_range != "MAX":
+    date_offset = date_ranges[date_range]
+    if isinstance(date_offset, int):  # Handle YTD separately if it's in days
+        start_date = datetime.now() - timedelta(days=date_offset)
+    else:
+        start_date = datetime.now() - date_offset
+else:
+    start_date = None
+
+end_date = datetime.now()
+
+interval = st.selectbox("Select Time Interval", ["1d", "1mo", "1y"], index=0)  # Default to "Day"
     chart_type = st.selectbox("Select Chart Type", ["Line", "Candlestick"], index=0)
 
     # Fetch historical data
