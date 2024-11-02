@@ -65,8 +65,19 @@ with tab1:
     st.write(f"**Industry:** {info.get('industry', 'N/A')}")
     st.write(f"**Market Cap:** {info.get('marketCap', 'N/A'):,}")
     st.write(f"**Summary:** {info.get('longBusinessSummary', 'N/A')}")
-    
 
+     # Shorten the company summary
+    summary_length = 300  # Character limit for summary
+    if len(summary) > summary_length:
+        short_summary = summary[:summary_length] + "..."
+        st.write(f"**Summary:** {short_summary}")
+        
+        # "Read more" button to expand the full summary
+        if st.button("Read more about the company"):
+            st.write(f"**Full Summary:** {summary}")
+    else:
+        st.write(f"**Summary:** {summary}")
+        
     # Display major shareholders
     st.write("### Major Shareholders")
     shareholders = stock.major_holders
@@ -248,5 +259,54 @@ with tab5:
         yaxis_title="Closing Price (USD)",
         template="plotly_white"
     )
+
+
+#Fetch data for dividends
+       dividends = stock.dividends
+
+    # Check if there's dividend data available
+    if not dividends.empty:
+        # 1. Dividend History Chart
+        st.write(f"### {stock_symbol} Dividends")
+        fig_dividends = go.Figure()
+        fig_dividends.add_trace(go.Scatter(
+            x=dividends.index,
+            y=dividends.values,
+            mode='lines+markers',
+            name="Dividends",
+            line=dict(color='blue')
+        ))
+        fig_dividends.update_layout(
+            title=f"{stock_symbol} Dividends",
+            xaxis_title="Date",
+            yaxis_title="Dividend (USD)",
+            template="plotly_white"
+        )
+        st.plotly_chart(fig_dividends)
+
+        # 2. Dividend Growth (Year-over-Year) Chart
+        st.write(f"### {stock_symbol} Dividend Growth (YoY)")
+        
+        # Calculate year-over-year dividend growth percentage
+        dividends_annual = dividends.resample('Y').sum()
+        dividend_growth = dividends_annual.pct_change().fillna(0) * 100  # Percentage growth
+
+        fig_growth = go.Figure()
+        fig_growth.add_trace(go.Scatter(
+            x=dividend_growth.index,
+            y=dividend_growth.values,
+            mode='lines+markers',
+            name="Dividend Growth (%)",
+            line=dict(color='blue')
+        ))
+        fig_growth.update_layout(
+            title=f"{stock_symbol} Dividend Growth (YoY)",
+            xaxis_title="Date",
+            yaxis_title="Percentage Change (%)",
+            template="plotly_white"
+        )
+        st.plotly_chart(fig_growth)
+    else:
+        st.write("No dividend data available for this stock.")
     st.plotly_chart(fig_line)
 
