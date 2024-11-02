@@ -9,6 +9,21 @@ import requests
 import matplotlib.dates as mdates
 
 
+# Add custom CSS for the background color
+st.markdown(
+    """
+    <style>
+    .reportview-container {
+        background: #ADD8E6;  /* Light blue color */
+    }
+    .sidebar .sidebar-content {
+        background: #ADD8E6;  /* Light blue for sidebar */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # Fetch the S&P 500 stock symbols from Wikipedia
 @st.cache_data  # Cache to avoid re-downloading data
 def load_sp500_symbols():
@@ -39,6 +54,8 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs(["Summary", "Chart", "Financials", "Monte
 
 # Summary tab
 with tab1:
+    
+
     st.subheader("Stock Summary")
     
     # Display basic company info
@@ -49,10 +66,12 @@ with tab1:
     st.write(f"**Market Cap:** {info.get('marketCap', 'N/A'):,}")
     st.write(f"**Summary:** {info.get('longBusinessSummary', 'N/A')}")
     
+
     # Display major shareholders
     st.write("### Major Shareholders")
     shareholders = stock.major_holders
     st.write(shareholders)
+
 
 # Chart tab
 # Chart tab with additional features
@@ -151,7 +170,8 @@ with tab4:
     daily_returns = data['Close'].pct_change().dropna()
     mean_return = daily_returns.mean()
     std_dev = daily_returns.std()
-    
+   
+
     # Initialize Monte Carlo simulation
     simulations = np.zeros((time_horizon, n_simulations))
     last_price = data['Close'][-1]
@@ -162,6 +182,10 @@ with tab4:
             price *= (1 + np.random.normal(mean_return, std_dev))
             simulations[t, i] = price
     
+        # Calculate and display Value at Risk (VaR)
+    VaR_95 = np.percentile(simulations[-1], 5)
+    st.write(f" Value at Risk (VaR) at 95% confidence interval: ${VaR_95:.2f}")
+
     # Plot simulation results
     plt.figure(figsize=(10, 6))
     plt.plot(simulations)
@@ -170,9 +194,6 @@ with tab4:
     plt.ylabel("Price")
     st.pyplot(plt)
 
-    # Calculate and display Value at Risk (VaR)
-    VaR_95 = np.percentile(simulations[-1], 5)
-    st.write(f"Value at Risk (VaR) at 95% confidence interval: ${VaR_95:.2f}")
 
 # Additional imports
 from collections import defaultdict
@@ -216,4 +237,16 @@ with tab5:
         # Display the performance data in a table
         performance_df = pd.DataFrame(list(performance_data.items()), columns=['Metric', 'Value'])
         st.table(performance_df)
+
+# Line Chart for Stock Performance Over Time
+    st.write("### Stock Performance Over Time")
+    fig_line = go.Figure()
+    fig_line.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Closing Price'))
+    fig_line.update_layout(
+        title=f"{stock_symbol} - 1 Year Stock Performance",
+        xaxis_title="Date",
+        yaxis_title="Closing Price (USD)",
+        template="plotly_white"
+    )
+    st.plotly_chart(fig_line)
 
