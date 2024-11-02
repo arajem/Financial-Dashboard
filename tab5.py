@@ -116,8 +116,10 @@ else:
 end_date = datetime.now()
 
 interval = st.selectbox("Select Time Interval", ["1d", "1mo", "1y"], index=0)  # Default to "Day"
+def display_chart_options():
+    # Ensure consistent indentation with 4 spaces
     chart_type = st.selectbox("Select Chart Type", ["Line", "Candlestick"], index=0)
-
+    
     # Fetch historical data
     data = stock.history(start=start_date, end=end_date, interval=interval)
 
