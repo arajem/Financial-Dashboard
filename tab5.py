@@ -64,9 +64,9 @@ with tab1:
     st.write(f"**Sector:** {info.get('sector', 'N/A')}")
     st.write(f"**Industry:** {info.get('industry', 'N/A')}")
     st.write(f"**Market Cap:** {info.get('marketCap', 'N/A'):,}")
-    st.write(f"**Summary:** {info.get('longBusinessSummary', 'N/A')}")
-
-     # Shorten the company summary
+    summary = info.get('longBusinessSummary', 'N/A')
+    
+    # Shorten the company summary
     summary_length = 300  # Character limit for summary
     if len(summary) > summary_length:
         short_summary = summary[:summary_length] + "..."
