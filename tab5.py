@@ -261,4 +261,4 @@ with tab5:
         yaxis_title="Closing Price (USD)",
         template="plotly_white"
     )
-  st.plotly_chart(fig_line) 
+    st.plotly_chart(fig_line) 
