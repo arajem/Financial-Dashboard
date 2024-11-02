@@ -260,29 +260,29 @@ with tab5:
         template="plotly_white"
     )
 
+        # Fetch dividends data from the stock
+    dividends = stock.dividends
 
-#Fetch data for dividends
-       dividends = stock.dividends
-
-    # Check if there's dividend data available
+    # Ensure correct indentation of subsequent lines
     if not dividends.empty:
-        # 1. Dividend History Chart
-        st.write(f"### {stock_symbol} Dividends")
+        st.write("### Dividend History")
         fig_dividends = go.Figure()
+        
         fig_dividends.add_trace(go.Scatter(
-            x=dividends.index,
-            y=dividends.values,
+            x=dividends.index, y=dividends.values,
             mode='lines+markers',
-            name="Dividends",
-            line=dict(color='blue')
+            name='Dividends'
         ))
+        
         fig_dividends.update_layout(
-            title=f"{stock_symbol} Dividends",
+            title=f"{stock_symbol} Dividend History",
             xaxis_title="Date",
-            yaxis_title="Dividend (USD)",
+            yaxis_title="Dividend Amount (USD)",
             template="plotly_white"
         )
         st.plotly_chart(fig_dividends)
+    else:
+        st.write("No dividend data available.")
 
         # 2. Dividend Growth (Year-over-Year) Chart
         st.write(f"### {stock_symbol} Dividend Growth (YoY)")
