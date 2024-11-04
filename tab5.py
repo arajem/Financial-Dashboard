@@ -37,7 +37,8 @@ symbols, company_data = load_sp500_symbols()
 
 # Define dashboard layout
 st.sidebar.title("📈 Arajem Aboudi - Financial Dashboard📉")
-
+st.sidebar.subheader("Make your selection")
+stock_symbol = st.sidebar.selectbox("Select a stock", symbols)
 # Options for date range
     date_ranges = {
         "1M": timedelta(days=30),
@@ -49,13 +50,12 @@ st.sidebar.title("📈 Arajem Aboudi - Financial Dashboard📉")
         "5Y": timedelta(days=5 * 365)
     }
 
-    # Select date range and interval
-    date_range = st.selectbox("Select Date Range", list(date_ranges.keys()))
-    start_date = datetime.now() - date_ranges[date_range] if date_range != "MAX" else None
-    end_date = datetime.now()
+# Add Date Range Selector to the sidebar
+date_range = st.sidebar.selectbox("Select Date Range", list(date_ranges.keys()))
+start_date = datetime.now() - date_ranges[date_range] if date_range != "MAX" else None
+end_date = datetime.now()
 
-st.sidebar.subheader("Make your selection")
-stock_symbol = st.sidebar.selectbox("Select a stock", symbols)
+
 update_button = st.sidebar.button("Update Data")
 
 
