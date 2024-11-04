@@ -90,21 +90,6 @@ with tab1:
     else:
         st.write(f"**Summary:** {summary}")
 
-# Line Chart for Stock Performance Over Time
-    st.write("### Stock Performance Over Time")
-    fig_line = go.Figure()
-    fig_line.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Closing Price',
-    fill='tozeroy',  # Fill the area below the line
-    fillcolor='#ADD8E6'  # Light blue color for fill
-))
-    fig_line.update_layout(
-        title=f"{stock_symbol} - 1 Year Stock Performance",
-        xaxis_title="Date",
-        yaxis_title="Closing Price (USD)",
-        template="plotly_white"
-    )
-    st.plotly_chart(fig_line) 
-
 # Chart tab
 # Chart tab with additional features
 with tab2:
@@ -271,4 +256,19 @@ with tab5:
         # Display the performance data in a table
         performance_df = pd.DataFrame(list(performance_data.items()), columns=['Metric', 'Value'])
         st.table(performance_df)
+
+# Line Chart for Stock Performance Over Time
+    st.write("### Stock Performance Over Time")
+    fig_line = go.Figure()
+    fig_line.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Closing Price',
+    fill='tozeroy',  # Fill the area below the line
+    fillcolor='#ADD8E6'  # Light blue color for fill
+))
+    fig_line.update_layout(
+        title=f"{stock_symbol} - 1 Year Stock Performance",
+        xaxis_title="Date",
+        yaxis_title="Closing Price (USD)",
+        template="plotly_white"
+    )
+    st.plotly_chart(fig_line) 
 
