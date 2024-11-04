@@ -64,6 +64,12 @@ with tab1:
     st.write(f"**Sector:** {info.get('sector', 'N/A')}")
     st.write(f"**Industry:** {info.get('industry', 'N/A')}")
     st.write(f"**Market Cap:** {info.get('marketCap', 'N/A'):,}")
+
+     # Display major shareholders
+    st.write("### Major Shareholders")
+    shareholders = stock.major_holders
+    st.write(shareholders)
+    
     summary = info.get('longBusinessSummary', 'N/A')
     
     # Shorten the company summary
@@ -78,10 +84,6 @@ with tab1:
     else:
         st.write(f"**Summary:** {summary}")
         
-    # Display major shareholders
-    st.write("### Major Shareholders")
-    shareholders = stock.major_holders
-    st.write(shareholders)
 
 
 # Chart tab
