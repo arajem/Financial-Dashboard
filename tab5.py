@@ -37,31 +37,10 @@ symbols, company_data = load_sp500_symbols()
 
 # Define dashboard layout
 st.sidebar.title("📈 Arajem Aboudi - Financial Dashboard📉")
+
 st.sidebar.subheader("Make your selection")
 stock_symbol = st.sidebar.selectbox("Select a stock", symbols)
-
-# Options for date range
-date_range = st.sidebar.selectbox("Select Date Range", list(date_ranges.keys()))
-    date_ranges = {
-        "1M": timedelta(days=30),
-        "3M": timedelta(days=90),
-        "6M": timedelta(days=180),
-        "YTD": (datetime.now() - datetime(datetime.now().year, 1, 1)).days,
-        "1Y": timedelta(days=365),
-        "3Y": timedelta(days=3 * 365),
-        "5Y": timedelta(days=5 * 365)
-    }
-
-# Add Date Range Selector to the sidebar
-
-start_date = datetime.now() - date_ranges[date_range] if date_range != "MAX" else None
-end_date = datetime.now()
-
-
 update_button = st.sidebar.button("Update Data")
-
-
-
 
 # Display selected stock name
 company_name = company_data[company_data['Symbol'] == stock_symbol]['Security'].values[0]
@@ -69,6 +48,7 @@ st.sidebar.write(f"**Selected Company:** {company_name}")
 
 # Load stock data for the selected symbol
 stock = yf.Ticker(stock_symbol)
+
 
 # Create separate tabs for each section
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Summary", "Chart", "Financials", "Monte Carlo Simulation", "A Brief Analysis","Portfolio Management"])
@@ -115,6 +95,22 @@ with tab1:
 # Chart tab with additional features
 with tab2:
     st.subheader("Stock Price Chart")
+
+    # Options for date range
+    date_ranges = {
+        "1M": timedelta(days=30),
+        "3M": timedelta(days=90),
+        "6M": timedelta(days=180),
+        "YTD": (datetime.now() - datetime(datetime.now().year, 1, 1)).days,
+        "1Y": timedelta(days=365),
+        "3Y": timedelta(days=3 * 365),
+        "5Y": timedelta(days=5 * 365)
+    }
+
+    # Select date range and interval
+    date_range = st.selectbox("Select Date Range", list(date_ranges.keys()))
+    start_date = datetime.now() - date_ranges[date_range] if date_range != "MAX" else None
+    end_date = datetime.now()
 
     interval = st.selectbox("Select Time Interval", ["1d", "1mo", "1y"], index=0)  # Default to "Day"
     chart_type = st.selectbox("Select Chart Type", ["Line", "Candlestick"], index=0)
