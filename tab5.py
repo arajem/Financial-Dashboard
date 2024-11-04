@@ -42,6 +42,21 @@ st.sidebar.subheader("Make your selection")
 stock_symbol = st.sidebar.selectbox("Select a stock", symbols)
 update_button = st.sidebar.button("Update Data")
 
+ # Options for date range
+    date_ranges = {
+        "1M": timedelta(days=30),
+        "3M": timedelta(days=90),
+        "6M": timedelta(days=180),
+        "YTD": (datetime.now() - datetime(datetime.now().year, 1, 1)).days,
+        "1Y": timedelta(days=365),
+        "3Y": timedelta(days=3 * 365),
+        "5Y": timedelta(days=5 * 365)
+    }
+
+    # Select date range and interval
+    date_range = st.selectbox("Select Date Range", list(date_ranges.keys()))
+    start_date = datetime.now() - date_ranges[date_range] if date_range != "MAX" else None
+    end_date = datetime.now()
 # Display selected stock name
 company_name = company_data[company_data['Symbol'] == stock_symbol]['Security'].values[0]
 st.sidebar.write(f"**Selected Company:** {company_name}")
@@ -94,22 +109,6 @@ with tab1:
 # Chart tab with additional features
 with tab2:
     st.subheader("Stock Price Chart")
-
- # Options for date range
-    date_ranges = {
-        "1M": timedelta(days=30),
-        "3M": timedelta(days=90),
-        "6M": timedelta(days=180),
-        "YTD": (datetime.now() - datetime(datetime.now().year, 1, 1)).days,
-        "1Y": timedelta(days=365),
-        "3Y": timedelta(days=3 * 365),
-        "5Y": timedelta(days=5 * 365)
-    }
-
-    # Select date range and interval
-    date_range = st.selectbox("Select Date Range", list(date_ranges.keys()))
-    start_date = datetime.now() - date_ranges[date_range] if date_range != "MAX" else None
-    end_date = datetime.now()
 
     interval = st.selectbox("Select Time Interval", ["1d", "1mo", "1y"], index=0)  # Default to "Day"
     chart_type = st.selectbox("Select Chart Type", ["Line", "Candlestick"], index=0)
