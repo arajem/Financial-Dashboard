@@ -50,7 +50,7 @@ st.sidebar.write(f"**Selected Company:** {company_name}")
 stock = yf.Ticker(stock_symbol)
 
 # Create separate tabs for each section
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Summary", "Chart", "Financials", "Monte Carlo Simulation", "My Own Analysis","Portfolio Builder"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Summary", "Chart", "Financials", "Monte Carlo Simulation", "A Brief Analysis","Portfolio Builder"])
 
 # Summary tab
 with tab1:
@@ -218,9 +218,9 @@ with tab4:
 from collections import defaultdict
 
 
-# Add the new "Your Own Analysis" tab
+# Add the new "A Brief Analysis" tab
 with tab5:
-    st.subheader("Your Own Analysis")
+    st.subheader("A Brief Analysis")
 
 # Create columns for the two tables
     col1, col2 = st.columns(2)
