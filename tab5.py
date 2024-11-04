@@ -58,17 +58,25 @@ with tab1:
 
     st.subheader("Stock Summary")
     
-    # Display basic company info
-    info = stock.info
+    # Fetch stock information
+info = stock.info
+shareholders = stock.major_holders
+
+# Create two columns
+col1, col2 = st.columns(2)
+
+# Populate the first column with company information
+with col1:
     st.write(f"**Company:** {info.get('longName', 'N/A')}")
     st.write(f"**Sector:** {info.get('sector', 'N/A')}")
     st.write(f"**Industry:** {info.get('industry', 'N/A')}")
     st.write(f"**Market Cap:** {info.get('marketCap', 'N/A'):,}")
 
-     # Display major shareholders
+# Populate the second column with major shareholders
+with col2:
     st.write("### Major Shareholders")
-    shareholders = stock.major_holders
     st.write(shareholders)
+
     
     summary = info.get('longBusinessSummary', 'N/A')
     
