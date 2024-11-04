@@ -56,7 +56,6 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs(["Summary", "Chart", "Financials", "Monte
 with tab1:
     
 
-    st.subheader("Stock Summary")
     
     # Fetch stock information
 # Fetch stock information
@@ -68,6 +67,7 @@ col1, col2 = st.columns(2)
 
 # Populate the first column with company information
 with col1:
+    st.subheader("Stock Summary")
     st.write(f"**Company:** {info.get('longName', 'N/A')}")
     st.write(f"**Sector:** {info.get('sector', 'N/A')}")
     st.write(f"**Industry:** {info.get('industry', 'N/A')}")
