@@ -39,7 +39,9 @@ symbols, company_data = load_sp500_symbols()
 st.sidebar.title("📈 Arajem Aboudi - Financial Dashboard📉")
 st.sidebar.subheader("Make your selection")
 stock_symbol = st.sidebar.selectbox("Select a stock", symbols)
+
 # Options for date range
+date_range = st.sidebar.selectbox("Select Date Range", list(date_ranges.keys()))
     date_ranges = {
         "1M": timedelta(days=30),
         "3M": timedelta(days=90),
@@ -51,7 +53,7 @@ stock_symbol = st.sidebar.selectbox("Select a stock", symbols)
     }
 
 # Add Date Range Selector to the sidebar
-date_range = st.sidebar.selectbox("Select Date Range", list(date_ranges.keys()))
+
 start_date = datetime.now() - date_ranges[date_range] if date_range != "MAX" else None
 end_date = datetime.now()
 
