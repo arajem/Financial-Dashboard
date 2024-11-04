@@ -75,7 +75,7 @@ with col1:
 
 # Populate the second column with major shareholders
 with col2:
-    st.write("### Major Shareholders")
+    st.write("**Major Shareholders**")
     st.write(shareholders)
 
 # Full-width company summary below the columns
