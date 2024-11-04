@@ -50,7 +50,7 @@ st.sidebar.write(f"**Selected Company:** {company_name}")
 stock = yf.Ticker(stock_symbol)
 
 # Create separate tabs for each section
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["Summary", "Chart", "Financials", "Monte Carlo Simulation", "My Own Analysis"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Summary", "Chart", "Financials", "Monte Carlo Simulation", "My Own Analysis","Peer Comparison"])
 
 # Summary tab
 with tab1:
@@ -271,4 +271,26 @@ with tab5:
         template="plotly_white"
     )
     st.plotly_chart(fig_line) 
+
+# Peer Comparison Tab
+with tab6:
+    st.subheader("Peer Comparison")
+
+    # Get sector and find peers
+    selected_sector = info.get("sector", "N/A")
+    peer_symbols = company_data[company_data["Sector"] == selected_sector]["Symbol"].tolist()
+    peer_symbols.remove(stock_symbol)  # Exclude selected stock
+
+    # Display peer metrics
+    peer_metrics = []
+    for symbol in peer_symbols[:5]:  # Limit to top 5 peers
+        peer_stock = yf.Ticker(symbol)
+        peer_info = peer_stock.info
+        peer_metrics.append({
+            "Symbol": symbol,
+            "P/E Ratio": peer_info.get("trailingPE", "N/A"),
+            "Market Cap": peer_info.get("marketCap", "N/A"),
+            "Revenue": peer_info.get("totalRevenue", "N/A")
+        })
+    st.write(pd.DataFrame(peer_metrics))
 
