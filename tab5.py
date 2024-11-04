@@ -59,10 +59,11 @@ with tab1:
     st.subheader("Stock Summary")
     
     # Fetch stock information
+# Fetch stock information
 info = stock.info
 shareholders = stock.major_holders
 
-# Create two columns
+# Create two columns for company information and major shareholders
 col1, col2 = st.columns(2)
 
 # Populate the first column with company information
@@ -77,21 +78,20 @@ with col2:
     st.write("### Major Shareholders")
     st.write(shareholders)
 
+# Full-width company summary below the columns
+summary = info.get('longBusinessSummary', 'N/A')
+summary_length = 300  # Character limit for summary
+
+# Display the short summary with a "Read more" option
+if len(summary) > summary_length:
+    short_summary = summary[:summary_length] + "..."
+    st.write(f"**Summary:** {short_summary}")
     
-    summary = info.get('longBusinessSummary', 'N/A')
-    
-    # Shorten the company summary
-    summary_length = 300  # Character limit for summary
-    if len(summary) > summary_length:
-        short_summary = summary[:summary_length] + "..."
-        st.write(f"**Summary:** {short_summary}")
-        
-        # "Read more" button to expand the full summary
-        if st.button("Read more about the company"):
-            st.write(f"**Full Summary:** {summary}")
-    else:
-        st.write(f"**Summary:** {summary}")
-        
+    # "Read more" button to expand the full summary
+    if st.button("Read more about the company"):
+        st.write(f"**Full Summary:** {summary}")
+else:
+    st.write(f"**Summary:** {summary}")
 
 
 # Chart tab
