@@ -38,11 +38,7 @@ symbols, company_data = load_sp500_symbols()
 # Define dashboard layout
 st.sidebar.title("📈 Arajem Aboudi - Financial Dashboard📉")
 
-st.sidebar.subheader("Make your selection")
-stock_symbol = st.sidebar.selectbox("Select a stock", symbols)
-update_button = st.sidebar.button("Update Data")
-
- # Options for date range
+# Options for date range
     date_ranges = {
         "1M": timedelta(days=30),
         "3M": timedelta(days=90),
@@ -57,6 +53,14 @@ update_button = st.sidebar.button("Update Data")
     date_range = st.selectbox("Select Date Range", list(date_ranges.keys()))
     start_date = datetime.now() - date_ranges[date_range] if date_range != "MAX" else None
     end_date = datetime.now()
+
+st.sidebar.subheader("Make your selection")
+stock_symbol = st.sidebar.selectbox("Select a stock", symbols)
+update_button = st.sidebar.button("Update Data")
+
+
+
+
 # Display selected stock name
 company_name = company_data[company_data['Symbol'] == stock_symbol]['Security'].values[0]
 st.sidebar.write(f"**Selected Company:** {company_name}")
