@@ -50,7 +50,7 @@ st.sidebar.write(f"**Selected Company:** {company_name}")
 stock = yf.Ticker(stock_symbol)
 
 # Create separate tabs for each section
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Summary", "Chart", "Financials", "Monte Carlo Simulation", "A Brief Analysis","Portfolio Builder"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Summary", "Chart", "Financials", "Monte Carlo Simulation", "A Brief Analysis","Portfolio Management"])
 
 # Summary tab
 with tab1:
@@ -274,7 +274,7 @@ with tab5:
 
 # Portfolio Builder Tab
 with tab6:
-    st.subheader("Portfolio Builder")
+    st.subheader("Portfolio Management")
 
     # Select multiple stocks for portfolio
     selected_symbols = st.multiselect("Select Stocks for Portfolio", symbols, default=[stock_symbol])
