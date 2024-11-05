@@ -50,7 +50,17 @@ st.sidebar.write(f"**Selected Company:** {company_name}")
 # Display the selected date range in the sidebar
 st.sidebar.write(f"**Selected Date Range:** {date_range}")
 
-update_button = st.sidebar.button("Update & Download Data")
+if update_button:
+    data = stock.history(start=start_date, end=end_date)
+    csv_data = data.to_csv().encode('utf-8')  # Convert data to CSV format and encode it for download
+
+    # Add a download button to download the CSV data
+    st.sidebar.download_button(
+        label="Download Stock Data as CSV",
+        data=csv_data,
+        file_name=f"{stock_symbol}_data_{date_range}.csv",
+        mime="text/csv"
+    )
 
 # Load stock data for the selected symbol
 stock = yf.Ticker(stock_symbol)
