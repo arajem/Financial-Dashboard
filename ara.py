@@ -149,14 +149,13 @@ with tab4:
             simulations[t, i] = price
     
     VaR_95 = np.percentile(simulations[-1], 5)
-    st.write(f" Value at Risk (VaR) at 95% confidence interval: ${VaR_95:.2f} + 'USD'")
+    st.write(f" Value at Risk (VaR) at 95% confidence interval: ${VaR_95:.2f}")
 
     plt.figure(figsize=(10, 6))
     plt.plot(simulations)
     plt.axhline(y=data['Close'][-1], color='red')
     plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
-    plt.legend(['Current stock price is: ' + str(np.round(data['Close'][-1], 2)) + 'USD'])
-    plt.get_legend().legend_handles[0].set_color('red')
+    plt.legend(['Current stock price is: ' + str(np.round(data['Close'][-1], 2))])
     plt.xlabel("Day")
     plt.ylabel("Price")
     st.pyplot(plt)
