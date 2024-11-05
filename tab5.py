@@ -28,11 +28,6 @@ st.sidebar.title("📈 Arajem Aboudi - Financial Dashboard 📉")
 
 st.sidebar.subheader("Make your selection")
 stock_symbol = st.sidebar.selectbox("Select a stock", symbols)
-update_button = st.sidebar.button("Update Data")
-
-# Display selected stock name
-company_name = company_data[company_data['Symbol'] == stock_symbol]['Security'].values[0]
-st.sidebar.write(f"**Selected Company:** {company_name}")
 
 # Options for date range
 date_ranges = {
@@ -48,8 +43,14 @@ date_range = st.sidebar.selectbox("Select Date Range", list(date_ranges.keys()))
 start_date = datetime.now() - date_ranges[date_range] if date_range != "MAX" else None
 end_date = datetime.now()
 
+# Display selected stock name
+company_name = company_data[company_data['Symbol'] == stock_symbol]['Security'].values[0]
+st.sidebar.write(f"**Selected Company:** {company_name}")
+
 # Display the selected date range in the sidebar
 st.sidebar.write(f"**Selected Date Range:** {date_range}")
+
+update_button = st.sidebar.button("Update Data")
 
 # Load stock data for the selected symbol
 stock = yf.Ticker(stock_symbol)
@@ -152,7 +153,7 @@ with tab4:
     plt.ylabel("Price")
     st.pyplot(plt)
 
-# Your Own Analysis tab
+# Analysis tab
 with tab5:
     st.subheader("Brief Analysis")
     col1, col2 = st.columns(2)
@@ -184,7 +185,7 @@ with tab5:
 
     st.write("### Stock Performance Over Time")
     fig_line = go.Figure()
-    fig_line.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Closing Price', fill='tozeroy', fillcolor='#ADD8E6'))
+    fig_line.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Closing Price', fill='tozeroy', fillcolor='#90EE90'))
     fig_line.update_layout(
         title=f"{stock_symbol} - 1 Year Stock Performance",
         xaxis_title="Date",
