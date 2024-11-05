@@ -97,23 +97,27 @@ with tab2:
         data["SMA_50"] = data["Close"].rolling(window=50).mean()
 
     fig = go.Figure()
+    
     if chart_type == "Line":
-        fig.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Close Price'))
+        fig.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Close Price', line=dict(color='blue', width=2)))  # Line color changed to blue
     else:
         fig.add_trace(go.Candlestick(
-            x=data.index, open=data['Open'], high=data['High'], low=data['Low'], close=data['Close'], name="Candlestick"
+            x=data.index, open=data['Open'], high=data['High'], low=data['Low'], close=data['Close'], name="Candlestick",
+            increasing_line_color='green', decreasing_line_color='red'  # Changed colors for candlestick
         ))
 
     if interval == "1d":
-        fig.add_trace(go.Scatter(x=data.index, y=data["SMA_50"], mode="lines", name="50-Day SMA", line=dict(color='purple', width=1.5)))
+        fig.add_trace(go.Scatter(x=data.index, y=data["SMA_50"], mode="lines", name="50-Day SMA", line=dict(color='orange', width=1.5)))  # SMA color changed to orange
 
-    fig.add_trace(go.Bar(x=data.index, y=data['Volume'], name='Volume', marker=dict(color='light purple blue'), opacity=0.3, yaxis="y2"))
+    fig.add_trace(go.Bar(x=data.index, y=data['Volume'], name='Volume', marker=dict(color='rgba(173, 216, 230, 0.5)'), opacity=0.3, yaxis="y2"))  # Volume bar color changed
+
     fig.update_layout(
         height=600, yaxis=dict(title="Price", showgrid=True),
         yaxis2=dict(title="Volume", overlaying="y", side="right", showgrid=False, range=[0, data['Volume'].max()*4]),
         xaxis=dict(title="Date", showgrid=True), title=f"{stock_symbol} Price Chart ({date_range} - Interval: {interval})"
     )
     st.plotly_chart(fig)
+
 
 # Financials tab
 with tab3:
