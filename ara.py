@@ -153,7 +153,7 @@ with tab4:
 
     plt.figure(figsize=(10, 6))
     plt.plot(simulations)
-    plt.axhline(y=current_price, color='red', linestyle='--', label=f"Current stock price: ${np.round(current_price, 2)}")
+    plt.axhline(y=current_price, color='red', label=f"Current stock price: ${np.round(current_price, 2)}")
     plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
     plt.xlabel("Day")
     plt.ylabel("Price")
