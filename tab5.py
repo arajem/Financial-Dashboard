@@ -1,3 +1,28 @@
+import streamlit as st
+import yfinance as yf
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import plotly.graph_objs as go
+from datetime import datetime, timedelta
+import requests
+import matplotlib.dates as mdates
+
+
+
+
+# Fetch the S&P 500 stock symbols from Wikipedia
+@st.cache_data  # Cache to avoid re-downloading data
+def load_sp500_symbols():
+    url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
+    html = requests.get(url).text
+    sp500 = pd.read_html(html)[0]  # Wikipedia table is the first in the list
+    return sp500['Symbol'].tolist(), sp500[['Symbol', 'Security']]
+
+# Load S&P 500 symbols and names
+symbols, company_data = load_sp500_symbols()
+
+
 # Define dashboard layout
 st.sidebar.title("📈 Arajem Aboudi - Financial Dashboard 📉")
 
