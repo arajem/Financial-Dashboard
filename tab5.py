@@ -55,7 +55,7 @@ st.sidebar.write(f"**Selected Date Range:** {date_range}")
 stock = yf.Ticker(stock_symbol)
 
 # Create separate tabs for each section
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Summary", "Chart", "Financials", "Monte Carlo Simulation", "My Own Analysis", "Peer Comparison"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Summary", "Chart", "Financials", "Monte Carlo Simulation", "Brief Analysis", "Portfolio Builder"])
 
 # Summary tab
 with tab1:
@@ -154,7 +154,7 @@ with tab4:
 
 # Your Own Analysis tab
 with tab5:
-    st.subheader("Your Own Analysis")
+    st.subheader("Brief Analysis")
     col1, col2 = st.columns(2)
     with col1:
         st.write("### Key Financial Metrics")
@@ -193,21 +193,28 @@ with tab5:
     )
     st.plotly_chart(fig_line)
 
-# Peer Comparison Tab
-with tab6:
-    st.subheader("Peer Comparison")
-    peer_symbols = company_data["Symbol"].tolist()  # Get a list of symbols without sector filtering
-    peer_symbols.remove(stock_symbol)  # Exclude selected stock
+# Portfolio Builder Tab
+with tab_portfolio:
+    st.subheader("Portfolio Builder")
 
-    # Display peer metrics
-    peer_metrics = []
-    for symbol in peer_symbols[:5]:  # Limit to top 5 peers
-        peer_stock = yf.Ticker(symbol)
-        peer_info = peer_stock.info
-        peer_metrics.append({
-            "Symbol": symbol,
-            "P/E Ratio": peer_info.get("trailingPE", "N/A"),
-            "Market Cap": peer_info.get("marketCap", "N/A"),
-            "Revenue": peer_info.get("totalRevenue", "N/A")
-        })
-    st.write(pd.DataFrame(peer_metrics))
+    # Select multiple stocks for portfolio
+    selected_symbols = st.multiselect("Select Stocks for Portfolio", symbols, default=[stock_symbol])
+    weights = [1 / len(selected_symbols)] * len(selected_symbols)  # Equal weights initially
+
+    # Allow user to adjust weights
+    for i, symbol in enumerate(selected_symbols):
+        weights[i] = st.slider(f"Weight for {symbol}", 0.0, 1.0, weights[i])
+
+    # Normalize weights to sum to 1
+    weights = np.array(weights)
+    weights /= weights.sum()
+
+    # Fetch historical data and calculate portfolio return
+    portfolio_data = yf.download(selected_symbols, start="2023-01-01")["Close"]
+    daily_returns = portfolio_data.pct_change().dropna()
+    portfolio_return = np.dot(daily_returns.mean() * 252, weights)
+    portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(daily_returns.cov() * 252, weights)))
+
+    st.write(f"Expected Annual Return: {portfolio_return * 100:.2f}%")
+    st.write(f"Portfolio Volatility: {portfolio_volatility * 100:.2f}%")
+
