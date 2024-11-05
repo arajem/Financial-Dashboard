@@ -99,7 +99,7 @@ with tab2:
     fig = go.Figure()
     
     if chart_type == "Line":
-        fig.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Close Price', line=dict(color='blue', width=2)))  # Line color changed to blue
+        fig.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Close Price', line=dict(color='lightblue', width=2)))  # Line color changed to blue
     else:
         fig.add_trace(go.Candlestick(
             x=data.index, open=data['Open'], high=data['High'], low=data['Low'], close=data['Close'], name="Candlestick",
