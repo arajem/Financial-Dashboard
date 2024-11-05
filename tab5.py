@@ -34,13 +34,14 @@ date_ranges = {
     "1M": timedelta(days=30),
     "3M": timedelta(days=90),
     "6M": timedelta(days=180),
-    "YTD": (datetime.now() - datetime(datetime.now().year, 1, 1)).days,
+    "YTD": timedelta(days=(datetime.now() - datetime(datetime.now().year, 1, 1)).days),
     "1Y": timedelta(days=365),
     "3Y": timedelta(days=3 * 365),
-    "5Y": timedelta(days=5 * 365)
+    "5Y": timedelta(days=5 * 365),
+    "MAX": None
 }
 date_range = st.sidebar.selectbox("Select Date Range", list(date_ranges.keys()))
-start_date = datetime.now() - date_ranges[date_range] if date_range != "MAX" else None
+start_date = datetime.now() - date_ranges[date_range] if date_ranges[date_range] else None
 end_date = datetime.now()
 
 # Display selected stock name
