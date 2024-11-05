@@ -154,7 +154,7 @@ with tab4:
     plt.figure(figsize=(10, 6))
     plt.plot(simulations)
     
-    current_price_line = plt.axhline(y=last_price, color='blue', linewidth=2) 
+    current_price_line = plt.axhline(y=last_price, color='indigo', linewidth=2) 
     plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
     plt.legend([current_price_line], [f'Current stock price: ${last_price:.2f}'])
     plt.xlabel("Day")
@@ -193,7 +193,7 @@ with tab5:
 
     st.write("### Stock Performance Over Time")
     fig_line = go.Figure()
-    fig_line.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Closing Price', fill='tozeroy', fillcolor='#ADD8E6'))
+    fig_line.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Closing Price', fill='darkmagenta', fillcolor='plum'))
     fig_line.update_layout(
         title=f"{stock_symbol} - 1 Year Stock Performance",
         xaxis_title="Date",
