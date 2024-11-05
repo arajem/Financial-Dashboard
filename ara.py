@@ -51,7 +51,7 @@ st.sidebar.write(f"**Selected Company:** {company_name}")
 # Display the selected date range in the sidebar
 st.sidebar.write(f"**Selected Date Range:** {date_range}")
 
-update_button = st.sidebar.button("Update Data")
+update_button = st.sidebar.button("Update & Download Data")
 
 # Load stock data for the selected symbol
 stock = yf.Ticker(stock_symbol)
