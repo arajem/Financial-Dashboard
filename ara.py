@@ -7,7 +7,7 @@ import plotly.graph_objs as go
 from datetime import datetime, timedelta
 import requests
 import matplotlib.dates as mdates
-
+from matplotlib import colors 
 
 
 
