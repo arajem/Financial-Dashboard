@@ -153,11 +153,9 @@ with tab4:
 
     plt.figure(figsize=(10, 6))
     plt.plot(simulations)
-    ax.axhline(y=data['Close'][-1], color='red')
     plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
     plt.xlabel("Day")
     plt.ylabel("Price")
-    ax.legend(['Current stock price is: ' + str(np.round(data['Close'][-1], 2))])
     st.pyplot(plt)
 
 # Analysis tab
