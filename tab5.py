@@ -185,7 +185,7 @@ with tab5:
 
     st.write("### Stock Performance Over Time")
     fig_line = go.Figure()
-    fig_line.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Closing Price', fill='tozeroy', fillcolor='#90EE90'))
+    fig_line.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Closing Price', fill='tozeroy', fillcolor='#ADD8E6'))
     fig_line.update_layout(
         title=f"{stock_symbol} - 1 Year Stock Performance",
         xaxis_title="Date",
@@ -195,7 +195,7 @@ with tab5:
     st.plotly_chart(fig_line)
 
 # Portfolio Builder Tab
-with tab_portfolio:
+with tab6:
     st.subheader("Portfolio Builder")
 
     # Select multiple stocks for portfolio
