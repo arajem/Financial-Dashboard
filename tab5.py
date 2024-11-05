@@ -9,20 +9,7 @@ import requests
 import matplotlib.dates as mdates
 
 
-# Add custom CSS for the background color
-st.markdown(
-    """
-    <style>
-    .reportview-container {
-        background: #ADD8E6;  /* Light blue color */
-    }
-    .sidebar .sidebar-content {
-        background: #ADD8E6;  /* Light blue for sidebar */
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+
 
 # Fetch the S&P 500 stock symbols from Wikipedia
 @st.cache_data  # Cache to avoid re-downloading data
@@ -39,19 +26,38 @@ symbols, company_data = load_sp500_symbols()
 st.sidebar.title("📈 Arajem Aboudi - Financial Dashboard📉")
 
 st.sidebar.subheader("Make your selection")
-stock_symbol = st.sidebar.selectbox("Select a stock", symbols)
-update_button = st.sidebar.button("Update Data")
+stock_symbol = st.sidebar.selectbox("Select a ticker", symbols)
+
+
+# Options for date range
+date_ranges = {
+    "1M": timedelta(days=30),
+    "3M": timedelta(days=90),
+    "6M": timedelta(days=180),
+    "YTD": (datetime.now() - datetime(datetime.now().year, 1, 1)).days,
+    "1Y": timedelta(days=365),
+    "3Y": timedelta(days=3 * 365),
+    "5Y": timedelta(days=5 * 365)
+}
+date_range = st.sidebar.selectbox("Select a period", list(date_ranges.keys()))
+start_date = datetime.now() - date_ranges[date_range] if date_range != "MAX" else None
+end_date = datetime.now()
+
 
 # Display selected stock name
 company_name = company_data[company_data['Symbol'] == stock_symbol]['Security'].values[0]
 st.sidebar.write(f"**Selected Company:** {company_name}")
 
+# Display the selected date range in the sidebar
+st.sidebar.write(f"**Selected Date Range:** {date_range}")
+
+update_button = st.sidebar.button("Update Data")
+
 # Load stock data for the selected symbol
 stock = yf.Ticker(stock_symbol)
 
-
 # Create separate tabs for each section
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Summary", "Chart", "Financials", "Monte Carlo Simulation", "A Brief Analysis","Portfolio Management"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Summary", "Chart", "Financials", "Monte Carlo Simulation", "My Own Analysis","Peer Comparison"])
 
 # Summary tab
 with tab1:
@@ -95,22 +101,6 @@ with tab1:
 # Chart tab with additional features
 with tab2:
     st.subheader("Stock Price Chart")
-
-    # Options for date range
-    date_ranges = {
-        "1M": timedelta(days=30),
-        "3M": timedelta(days=90),
-        "6M": timedelta(days=180),
-        "YTD": (datetime.now() - datetime(datetime.now().year, 1, 1)).days,
-        "1Y": timedelta(days=365),
-        "3Y": timedelta(days=3 * 365),
-        "5Y": timedelta(days=5 * 365)
-    }
-
-    # Select date range and interval
-    date_range = st.selectbox("Select Date Range", list(date_ranges.keys()))
-    start_date = datetime.now() - date_ranges[date_range] if date_range != "MAX" else None
-    end_date = datetime.now()
 
     interval = st.selectbox("Select Time Interval", ["1d", "1mo", "1y"], index=0)  # Default to "Day"
     chart_type = st.selectbox("Select Chart Type", ["Line", "Candlestick"], index=0)
@@ -219,9 +209,9 @@ with tab4:
 from collections import defaultdict
 
 
-# Add the new "A Brief Analysis" tab
+# Add the new "Your Own Analysis" tab
 with tab5:
-    st.subheader("A Brief Analysis")
+    st.subheader("Your Own Analysis")
 
 # Create columns for the two tables
     col1, col2 = st.columns(2)
@@ -273,28 +263,24 @@ with tab5:
     )
     st.plotly_chart(fig_line) 
 
-# Portfolio Builder Tab
+# Peer Comparison Tab
 with tab6:
-    st.subheader("Portfolio Management")
+    st.subheader("Peer Comparison")
 
-    # Select multiple stocks for portfolio
-    selected_symbols = st.multiselect("Select Stocks for Portfolio", symbols, default=[stock_symbol])
-    weights = [1 / len(selected_symbols)] * len(selected_symbols)  # Equal weights initially
+    # Get sector and find peers
+    selected_sector = info.get("sector", "N/A")
+    peer_symbols = company_data[company_data["Sector"] == selected_sector]["Symbol"].tolist()
+    peer_symbols.remove(stock_symbol)  # Exclude selected stock
 
-    # Allow user to adjust weights
-    for i, symbol in enumerate(selected_symbols):
-        weights[i] = st.slider(f"Weight for {symbol}", 0.0, 1.0, weights[i])
-
-    # Normalize weights to sum to 1
-    weights = np.array(weights)
-    weights /= weights.sum()
-
-    # Fetch historical data and calculate portfolio return
-    portfolio_data = yf.download(selected_symbols, start="2023-01-01")["Close"]
-    daily_returns = portfolio_data.pct_change().dropna()
-    portfolio_return = np.dot(daily_returns.mean() * 252, weights)
-    portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(daily_returns.cov() * 252, weights)))
-
-    st.write(f"Expected Annual Return: {portfolio_return * 100:.2f}%")
-    st.write(f"Portfolio Volatility: {portfolio_volatility * 100:.2f}%")
-
+    # Display peer metrics
+    peer_metrics = []
+    for symbol in peer_symbols[:5]:  # Limit to top 5 peers
+        peer_stock = yf.Ticker(symbol)
+        peer_info = peer_stock.info
+        peer_metrics.append({
+            "Symbol": symbol,
+            "P/E Ratio": peer_info.get("trailingPE", "N/A"),
+            "Market Cap": peer_info.get("marketCap", "N/A"),
+            "Revenue": peer_info.get("totalRevenue", "N/A")
+        })
+    st.write(pd.DataFrame(peer_metrics))
