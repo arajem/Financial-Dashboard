@@ -150,26 +150,34 @@ with tab3:
 # Monte Carlo Simulation tab
 with tab4:
     st.subheader("Monte Carlo Simulation for Future Stock Prices") 
-    n_simulations = st.selectbox("Number of Simulations", [200, 500, 1000])
-    time_horizon = st.selectbox("Time Horizon (days)", [30, 60, 90])
-    daily_returns = data['Close'].pct_change().dropna()
-    mean_return = daily_returns.mean()
-    std_dev = daily_returns.std()
-    simulations = np.zeros((time_horizon, n_simulations))
-    last_price = data['Close'][-1]
-    
-    for i in range(n_simulations):
-        price = last_price
-        for t in range(time_horizon):
-            price *= (1 + np.random.normal(mean_return, std_dev))
-            simulations[t, i] = price
-    
-    VaR_95 = np.percentile(simulations[-1], 5)
-    st.write(f" Value at Risk (VaR) at 95% confidence interval: ${VaR_95:.2f}")
+    # Number of simulations and time horizon
+n_simulations = st.selectbox("Number of Simulations", [200, 500, 1000])
+time_horizon = st.selectbox("Time Horizon (days)", [30, 60, 90])
 
-    plt.figure(figsize=(10, 6))
-    for i in range(n_simulations):
-    plt.plot(simulations[:, i], color=plt.cmPurples(i / n_simulations), alpha=0.5)  # Using shades of purple
+# Historical returns for the simulation
+daily_returns = data['Close'].pct_change().dropna()
+mean_return = daily_returns.mean()
+std_dev = daily_returns.std()
+
+# Initialize Monte Carlo simulation
+simulations = np.zeros((time_horizon, n_simulations))
+last_price = data['Close'][-1]
+
+for i in range(n_simulations):
+    price = last_price
+    for t in range(time_horizon):
+        price *= (1 + np.random.normal(mean_return, std_dev))
+        simulations[t, i] = price
+
+# Calculate and display Value at Risk (VaR)
+VaR_95 = np.percentile(simulations[-1], 5)
+st.write(f"Value at Risk (VaR) at 95% confidence interval: ${VaR_95:.2f}")
+
+# Plot simulation results
+plt.figure(figsize=(10, 6))
+for i in range(n_simulations):
+    plt.plot(simulations[:, i], color=plt.cm.Purples(i / n_simulations), alpha=0.5)  # Using shades of purple
+
 
     current_price_line = plt.axhline(y=last_price, color='blue', linewidth=2) 
     plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
