@@ -105,9 +105,9 @@ with tab2:
         ))
 
     if interval == "1d":
-        fig.add_trace(go.Scatter(x=data.index, y=data["SMA_50"], mode="lines", name="50-Day SMA", line=dict(color='orange', width=1.5)))
+        fig.add_trace(go.Scatter(x=data.index, y=data["SMA_50"], mode="lines", name="50-Day SMA", line=dict(color='purple', width=1.5)))
 
-    fig.add_trace(go.Bar(x=data.index, y=data['Volume'], name='Volume', marker=dict(color='blue'), opacity=0.3, yaxis="y2"))
+    fig.add_trace(go.Bar(x=data.index, y=data['Volume'], name='Volume', marker=dict(color='light purple blue'), opacity=0.3, yaxis="y2"))
     fig.update_layout(
         height=600, yaxis=dict(title="Price", showgrid=True),
         yaxis2=dict(title="Volume", overlaying="y", side="right", showgrid=False, range=[0, data['Volume'].max()*4]),
