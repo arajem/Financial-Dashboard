@@ -168,8 +168,9 @@ with tab4:
     st.write(f" Value at Risk (VaR) at 95% confidence interval: ${VaR_95:.2f}")
 
     plt.figure(figsize=(10, 6))
-    plt.plot(simulations)
-    
+    for i in range(n_simulations):
+    plt.plot(simulations[:, i], color=plt.cmPurples(i / n_simulations), alpha=0.5)  # Using shades of purple
+
     current_price_line = plt.axhline(y=last_price, color='blue', linewidth=2) 
     plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
     plt.legend([current_price_line], [f'Current stock price: ${last_price:.2f}'])
