@@ -133,7 +133,7 @@ with tab3:
 
 # Monte Carlo Simulation tab
 with tab4:
-    st.subheader("Monte Carlo Simulation for Future Stock Prices")
+    st.subheader("Monte Carlo Simulation for Future Stock Prices") 
     n_simulations = st.selectbox("Number of Simulations", [200, 500, 1000])
     time_horizon = st.selectbox("Time Horizon (days)", [30, 60, 90])
     daily_returns = data['Close'].pct_change().dropna()
@@ -153,13 +153,11 @@ with tab4:
 
     plt.figure(figsize=(10, 6))
     plt.plot(simulations)
-    plt.axhline(y=current_price, color='red', label=f"Current stock price: ${np.round(current_price, 2)}")
+    plt.axhline(y=data['Close'][-1])
     plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
+    plt.legend(['Current stock price is:' + str(np.round(data['Close'][-1], 2))])
     plt.xlabel("Day")
     plt.ylabel("Price")
-
-    #Display the legend and the plot
-    plt.legend()
     st.pyplot(plt)
 
 # Analysis tab
