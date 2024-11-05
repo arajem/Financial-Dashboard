@@ -153,9 +153,10 @@ with tab4:
 
     plt.figure(figsize=(10, 6))
     plt.plot(simulations)
-    plt.axhline(y=data['Close'][-1])
+    
+    current_price_line = plt.axhline(y=last_price, color='orange', linestyle='--', linewidth=2)
     plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
-    plt.legend(['Current stock price is:' + str(np.round(data['Close'][-1], 2))])
+    plt.legend([current_price_line], [f'Current stock price: ${last_price:.2f}')
     plt.xlabel("Day")
     plt.ylabel("Price")
     st.pyplot(plt)
