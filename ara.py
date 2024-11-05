@@ -192,7 +192,7 @@ with tab5:
 
     st.write("### Stock Performance Over Time")
     fig_line = go.Figure()
-    fig_line.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Closing Price', fill='tozeroy', fillcolor='#66CDAA'))
+    fig_line.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Closing Price', fill='tozeroy', fillcolor='#B0E0E6'))
     fig_line.update_layout(
         title=f"{stock_symbol} - 1 Year Stock Performance",
         xaxis_title="Date",
