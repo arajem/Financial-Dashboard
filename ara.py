@@ -53,7 +53,7 @@ st.sidebar.write(f"**Selected Date Range:** {date_range}")
 if st.sidebar.button("Update Data"):
     # Load stock data
     stock = yf.Ticker(stock_symbol)
-    data = stock.history(period="max")
+    data = stock.history(start=start_date, end=end_date)
     st.write("Data has been updated.")
 
     # Store the CSV data in a variable
