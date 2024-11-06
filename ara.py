@@ -36,8 +36,7 @@ date_ranges = {
     "YTD": timedelta(days=(datetime.now() - datetime(datetime.now().year, 1, 1)).days),
     "1Y": timedelta(days=365),
     "3Y": timedelta(days=3 * 365),
-    "5Y": timedelta(days=5 * 365),
-    "MAX": None
+    "5Y": timedelta(days=5 * 365)
 }
 date_range = st.sidebar.selectbox("Select Date Range", list(date_ranges.keys()))
 start_date = datetime.now() - date_ranges[date_range] if date_ranges[date_range] else None
@@ -113,7 +112,7 @@ end_date = datetime.now()
 # Chart tab
 with tab2:
     st.subheader("Stock Price Chart")
-    interval = st.selectbox("Select Time Interval", ["1d", "1mo", "1y"], index=0)
+    interval = st.selectbox("Select Time Interval", ["1d", "1mo"], index=0)
     chart_type = st.selectbox("Select Chart Type", ["Line", "Candlestick"], index=0)
     data = stock.history(start=start_date, end=end_date, interval=interval)
 
