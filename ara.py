@@ -161,38 +161,35 @@ with tab3:
 # Monte Carlo Simulation tab
 with tab4:
     st.subheader("Monte Carlo Simulation for Future Stock Prices") 
-    
-    #check if "data['Close']" contains data before trying to access the last element
     if data.empty:
         st.error("No data available for Monte Carlo simulation.")
     else:
-    n_simulations = st.selectbox("Number of Simulations", [200, 500, 1000])
-    time_horizon = st.selectbox("Time Horizon (days)", [30, 60, 90])
-    daily_returns = data['Close'].pct_change().dropna()
-    mean_return = daily_returns.mean()
-    std_dev = daily_returns.std()
-    simulations = np.zeros((time_horizon, n_simulations))
-    last_price = data['Close'][-1]
+        # Ensure the following lines are indented correctly under the 'else' statement
+        n_simulations = st.selectbox("Number of Simulations", [200, 500, 1000])
+        time_horizon = st.selectbox("Time Horizon (days)", [30, 60, 90])
+        daily_returns = data['Close'].pct_change().dropna()
+        mean_return = daily_returns.mean()
+        std_dev = daily_returns.std()
+        simulations = np.zeros((time_horizon, n_simulations))
+        last_price = data['Close'][-1]
 
-    for i in range(n_simulations):
-        price = last_price
-        for t in range(time_horizon):
-            price *= (1 + np.random.normal(mean_return, std_dev))
-            simulations[t, i] = price
+        for i in range(n_simulations):
+            price = last_price
+            for t in range(time_horizon):
+                price *= (1 + np.random.normal(mean_return, std_dev))
+                simulations[t, i] = price
 
-    VaR_95 = np.percentile(simulations[-1], 5)
-    st.write(f" Value at Risk (VaR) at 95% confidence interval: ${VaR_95:.2f}")
+        VaR_95 = np.percentile(simulations[-1], 5)
+        st.write(f" Value at Risk (VaR) at 95% confidence interval: ${VaR_95:.2f}")
 
-    plt.figure(figsize=(10, 6))
-    plt.plot(simulations)
-    current_price_line = plt.axhline(y=last_price, color='blue', linewidth=2) 
-    plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
-    plt.legend([current_price_line], [f'Current stock price: ${last_price:.2f}'])
-    plt.xlabel("Day")
-    plt.ylabel("Price")
-    st.pyplot(plt)
-
-
+        plt.figure(figsize=(10, 6))
+        plt.plot(simulations)
+        current_price_line = plt.axhline(y=last_price, color='blue', linewidth=2) 
+        plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
+        plt.legend([current_price_line], [f'Current stock price: ${last_price:.2f}'])
+        plt.xlabel("Day")
+        plt.ylabel("Price")
+        st.pyplot(plt)
 
 # Analysis tab
 with tab5:
