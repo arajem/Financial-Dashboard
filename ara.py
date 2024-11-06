@@ -36,7 +36,8 @@ date_ranges = {
     "YTD": timedelta(days=(datetime.now() - datetime(datetime.now().year, 1, 1)).days),
     "1Y": timedelta(days=365),
     "3Y": timedelta(days=3 * 365),
-    "5Y": timedelta(days=5 * 365)
+    "5Y": timedelta(days=5 * 365),
+    "ALL": 
 }
 date_range = st.sidebar.selectbox("Select Date Range", list(date_ranges.keys()))
 start_date = datetime.now() - date_ranges[date_range] if date_ranges[date_range] else None
@@ -53,7 +54,7 @@ st.sidebar.write(f"**Selected Date Range:** {date_range}")
 if st.sidebar.button("Update Data"):
     # Load stock data
     stock = yf.Ticker(stock_symbol)
-    data = stock.history(start=start_date, end=end_date)
+    data = stock.history(period="max")
     st.write("Data has been updated.")
 
     # Store the CSV data in a variable
