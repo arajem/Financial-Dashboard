@@ -149,7 +149,7 @@ with tab3:
 
 # Monte Carlo Simulation tab
 with tab4:
- st.subheader("Monte Carlo Simulation for Future Stock Prices") 
+    st.subheader("Monte Carlo Simulation for Future Stock Prices") 
     n_simulations = st.selectbox("Number of Simulations", [200, 500, 1000])
     time_horizon = st.selectbox("Time Horizon (days)", [30, 60, 90])
     daily_returns = data['Close'].pct_change().dropna()
@@ -169,13 +169,13 @@ with tab4:
 
     plt.figure(figsize=(10, 6))
     plt.plot(simulations)
-    
     current_price_line = plt.axhline(y=last_price, color='blue', linewidth=2) 
     plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
     plt.legend([current_price_line], [f'Current stock price: ${last_price:.2f}'])
     plt.xlabel("Day")
     plt.ylabel("Price")
     st.pyplot(plt)
+
 
 
 # Analysis tab
