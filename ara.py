@@ -36,8 +36,7 @@ date_ranges = {
     "YTD": timedelta(days=(datetime.now() - datetime(datetime.now().year, 1, 1)).days),
     "1Y": timedelta(days=365),
     "3Y": timedelta(days=3 * 365),
-    "5Y": timedelta(days=5 * 365),
-    "ALL": 
+    "5Y": timedelta(days=5 * 365) 
 }
 date_range = st.sidebar.selectbox("Select Date Range", list(date_ranges.keys()))
 start_date = datetime.now() - date_ranges[date_range] if date_ranges[date_range] else None
