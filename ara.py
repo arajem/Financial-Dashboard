@@ -102,6 +102,14 @@ with tab1:
     else:
         st.write(f"**Summary:** {summary}")
 
+# Define the date range and fetch data accordingly
+if date_range == "MAX":
+    start_date = None  # "MAX" range - use entire available data history
+else:
+    start_date = datetime.now() - date_ranges[date_range]
+
+end_date = datetime.now()
+
 # Chart tab
 with tab2:
     st.subheader("Stock Price Chart")
@@ -109,10 +117,13 @@ with tab2:
     chart_type = st.selectbox("Select Chart Type", ["Line", "Candlestick"], index=0)
     data = stock.history(start=start_date, end=end_date, interval=interval)
 
-    if interval == "1d":
-        data["SMA_50"] = data["Close"].rolling(window=50).mean()
+    if data.empty:
+        st.error("No data available for the selected date range and interval.")
+    else:
+        if interval == "1d":
+            data["SMA_50"] = data["Close"].rolling(window=50).mean()
 
-    fig = go.Figure()
+        fig = go.Figure()
     
     if chart_type == "Line":
         fig.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Close Price', line=dict(color='lightblue', width=2)))  # Line color changed to blue
@@ -150,6 +161,11 @@ with tab3:
 # Monte Carlo Simulation tab
 with tab4:
     st.subheader("Monte Carlo Simulation for Future Stock Prices") 
+    
+    #check if "data['Close']" contains data before trying to access the last element
+    if data.empty:
+        st.error("No data available for Monte Carlo simulation.")
+    else:
     n_simulations = st.selectbox("Number of Simulations", [200, 500, 1000])
     time_horizon = st.selectbox("Time Horizon (days)", [30, 60, 90])
     daily_returns = data['Close'].pct_change().dropna()
