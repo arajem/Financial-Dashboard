@@ -230,80 +230,84 @@ with tab5:
     # List of sectors for the dropdown menu
     sectors = sp500_data['GICS Sector'].unique()
 
-    # Add a dropdown menu to select the sector
-    sector = st.selectbox("Select Sector", sectors)
+    # Add a multi-select menu to select multiple sectors
+    selected_sectors = st.multiselect("Select Sectors", sectors, default=sectors[:1])  # Default to first sector
 
-    # Filter the symbols based on the selected sector
-    sector_symbols = sp500_data[sp500_data['GICS Sector'] == sector]['Symbol'].tolist()
-
-    # Select multiple stocks for portfolio
-    selected_symbols = st.multiselect("Select Stocks for Portfolio", sector_symbols, default=[sector_symbols[0]])
-
-    # Check if at least one stock is selected
-    if not selected_symbols:
-        st.warning("Please select at least one stock for your portfolio.")
+    if not selected_sectors:
+        st.warning("Please select at least one sector.")
     else:
-        # Initialize equal weights
-        weights = np.array([1 / len(selected_symbols)] * len(selected_symbols))
+        # Filter the symbols based on the selected sectors
+        filtered_sp500 = sp500_data[sp500_data['GICS Sector'].isin(selected_sectors)]
+        sector_symbols = filtered_sp500['Symbol'].tolist()
 
-        # Allow user to adjust weights with sum-to-1 constraint
-        adjusted_weights = []
-        for i, symbol in enumerate(selected_symbols):
-            adjusted_weight = st.slider(f"Weight for {symbol} (%)", 0.0, 100.0, weights[i] * 100.0) / 100
-            adjusted_weights.append(adjusted_weight)
+        # Select multiple stocks for portfolio
+        selected_symbols = st.multiselect("Select Stocks for Portfolio", sector_symbols, default=[sector_symbols[0]])
 
-        # Normalize weights to sum to 1
-        weights = np.array(adjusted_weights)
-        weights /= weights.sum()
-
-        # Function to fetch portfolio data with caching
-        @st.cache_data
-        def load_portfolio_data(tickers):
-            return yf.download(tickers, start="2023-01-01")["Close"]
-
-        # Fetch historical data and calculate portfolio return
-        portfolio_data = load_portfolio_data(selected_symbols)
-        daily_returns = portfolio_data.pct_change().dropna()
-
-        if daily_returns.empty:
-            st.error("No data available for the selected stocks.")
+        # Check if at least one stock is selected
+        if not selected_symbols:
+            st.warning("Please select at least one stock for your portfolio.")
         else:
-            # Calculate annualized return and volatility
-            portfolio_return = np.dot(daily_returns.mean() * 252, weights)
-            portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(daily_returns.cov() * 252, weights)))
-            sharpe_ratio = portfolio_return / portfolio_volatility if portfolio_volatility else 0
+            # Initialize equal weights
+            weights = np.array([1 / len(selected_symbols)] * len(selected_symbols))
 
-            # Display the two charts side by side with different sizes
-            col1, col2 = st.columns([1, 2])  # 1:2 width ratio
+            # Allow user to adjust weights with sum-to-1 constraint
+            adjusted_weights = []
+            for i, symbol in enumerate(selected_symbols):
+                adjusted_weight = st.slider(f"Weight for {symbol} (%)", 0.0, 100.0, weights[i] * 100.0) / 100
+                adjusted_weights.append(adjusted_weight)
 
-            # Custom purple and lilac colors
-            pie_colors = ['#9B59B6', '#8E44AD', '#7F3FBF', '#6A2C8B', '#4B2A7F']  # Shades of purple
-            line_color = '#8E44AD'  # Lilac color for line chart
+            # Normalize weights to sum to 1
+            weights = np.array(adjusted_weights)
+            weights /= weights.sum()
 
-            with col1:
-                st.write("### Portfolio Allocation")
-                # Create a pie chart with custom colors
-                allocation_chart = go.Figure(go.Pie(
-                    labels=selected_symbols, 
-                    values=weights * 100, 
-                    hole=0.3,
-                    marker=dict(colors=pie_colors)  # Apply custom colors
-                ))
-                st.plotly_chart(allocation_chart)
+            # Function to fetch portfolio data with caching
+            @st.cache_data
+            def load_portfolio_data(tickers):
+                return yf.download(tickers, start="2023-01-01")["Close"]
 
-            with col2:
-                st.write("### Portfolio Performance Over Time")
-                cumulative_return = (1 + daily_returns.dot(weights)).cumprod() - 1
-                fig_performance = go.Figure(go.Scatter(
-                    x=cumulative_return.index, 
-                    y=cumulative_return, 
-                    mode='lines', 
-                    name="Portfolio Cumulative Return",
-                    line=dict(color=line_color)  # Apply lilac color to the line chart
-                ))
-                fig_performance.update_layout(
-                    title="Portfolio Cumulative Return Over Time", 
-                    xaxis_title="Date", 
-                    yaxis_title="Cumulative Return"
-                )
-                st.plotly_chart(fig_performance)
+            # Fetch historical data and calculate portfolio return
+            portfolio_data = load_portfolio_data(selected_symbols)
+            daily_returns = portfolio_data.pct_change().dropna()
+
+            if daily_returns.empty:
+                st.error("No data available for the selected stocks.")
+            else:
+                # Calculate annualized return and volatility
+                portfolio_return = np.dot(daily_returns.mean() * 252, weights)
+                portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(daily_returns.cov() * 252, weights)))
+                sharpe_ratio = portfolio_return / portfolio_volatility if portfolio_volatility else 0
+
+                # Display the two charts side by side with different sizes
+                col1, col2 = st.columns([1, 2])  # 1:2 width ratio
+
+                # Custom purple and lilac colors
+                pie_colors = ['#9B59B6', '#8E44AD', '#7F3FBF', '#6A2C8B', '#4B2A7F']  # Shades of purple
+                line_color = '#8E44AD'  # Lilac color for line chart
+
+                with col1:
+                    st.write("### Portfolio Allocation")
+                    # Create a pie chart with custom colors
+                    allocation_chart = go.Figure(go.Pie(
+                        labels=selected_symbols, 
+                        values=weights * 100, 
+                        hole=0.3,
+                        marker=dict(colors=pie_colors)  # Apply custom colors
+                    ))
+                    st.plotly_chart(allocation_chart)
+
+                with col2:
+                    st.write("### Portfolio Performance Over Time")
+                    cumulative_return = (1 + daily_returns.dot(weights)).cumprod() - 1
+                    fig_performance = go.Figure(go.Scatter(
+                        x=cumulative_return.index, 
+                        y=cumulative_return, 
+                        mode='lines', 
+                        name="Portfolio Cumulative Return",
+                        line=dict(color=line_color)  # Apply lilac color to the line chart
+                    ))
+                    fig_performance.update_layout(
+                        title="Portfolio Cumulative Return Over Time", 
+                        xaxis_title="Date", 
+                        yaxis_title="Cumulative Return"
+                    )
+                    st.plotly_chart(fig_performance)
