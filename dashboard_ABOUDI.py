@@ -214,9 +214,31 @@ with tab4:
 with tab5:
     st.subheader("Portfolio Management")
 
+    # Fetch S&P 500 companies and their sectors from Wikipedia
+    @st.cache_data
+    def get_sp500_data():
+        url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
+        tables = pd.read_html(url)  # Read all tables from the Wikipedia page
+        sp500_df = tables[0]  # The first table contains the necessary data
+        sp500_df = sp500_df[['Symbol', 'GICS Sector']]  # Keep only symbol and sector columns
+        sp500_df['Symbol'] = sp500_df['Symbol'].str.replace('.', '-', regex=False)  # Clean symbols if needed
+        return sp500_df
+
+    # Get the S&P 500 dataset
+    sp500_data = get_sp500_data()
+
+    # List of sectors for the dropdown menu
+    sectors = sp500_data['GICS Sector'].unique()
+
+    # Add a dropdown menu to select the sector
+    sector = st.selectbox("Select Sector", sectors)
+
+    # Filter the symbols based on the selected sector
+    sector_symbols = sp500_data[sp500_data['GICS Sector'] == sector]['Symbol'].tolist()
+
     # Select multiple stocks for portfolio
-    selected_symbols = st.multiselect("Select Stocks for Portfolio", symbols, default=[stock_symbol])
-    
+    selected_symbols = st.multiselect("Select Stocks for Portfolio", sector_symbols, default=[sector_symbols[0]])
+
     # Check if at least one stock is selected
     if not selected_symbols:
         st.warning("Please select at least one stock for your portfolio.")
@@ -242,7 +264,7 @@ with tab5:
         # Fetch historical data and calculate portfolio return
         portfolio_data = load_portfolio_data(selected_symbols)
         daily_returns = portfolio_data.pct_change().dropna()
-        
+
         if daily_returns.empty:
             st.error("No data available for the selected stocks.")
         else:
