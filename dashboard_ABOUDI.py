@@ -202,7 +202,7 @@ with tab4:
             plt.plot(simulations[:, i], color=cmap(i / n_simulations))  # Apply colormap
 
         # Use a light grey horizontal line instead of purple
-        current_price_line = plt.axhline(y=last_price, color='lightgrey', linewidth=2)
+        current_price_line = plt.axhline(y=last_price, color='darkgrey', linewidth=2.5)
 
         plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
         plt.legend([current_price_line], [f'Current stock price: ${last_price:.2f}'])
