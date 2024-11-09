@@ -322,4 +322,8 @@ with tab5:
                         yaxis_title="Cumulative Return"
                     )
                     st.plotly_chart(fig_performance)
-
+            
+            # Display portfolio metrics
+            st.write(f"Expected Annual Return: {portfolio_return * 100:.2f}%")
+            st.write(f"Portfolio Volatility: {portfolio_volatility * 100:.2f}%")
+            st.write(f"Sharpe Ratio: {sharpe_ratio:.2f}")
