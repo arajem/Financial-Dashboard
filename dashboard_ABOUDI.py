@@ -241,23 +241,44 @@ with tab5:
             portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(daily_returns.cov() * 252, weights)))
             sharpe_ratio = portfolio_return / portfolio_volatility if portfolio_volatility else 0
 
-            # Display portfolio metrics
+            # Display the two charts side by side with different sizes
+col1, col2 = st.columns([1, 2])  # 1:2 width ratio
+
+# Custom purple and lilac colors
+pie_colors = ['#9B59B6', '#8E44AD', '#7F3FBF', '#6A2C8B', '#4B2A7F']  # Shades of purple
+line_color = '#8E44AD'  # Lilac color for line chart
+
+with col1:
+    st.write("### Portfolio Allocation")
+    # Create a pie chart with custom colors
+    allocation_chart = go.Figure(go.Pie(
+        labels=selected_symbols, 
+        values=weights * 100, 
+        hole=0.3,
+        marker=dict(colors=pie_colors)  # Apply custom colors
+    ))
+    st.plotly_chart(allocation_chart)
+
+with col2:
+    st.write("### Portfolio Performance Over Time")
+    cumulative_return = (1 + daily_returns.dot(weights)).cumprod() - 1
+    fig_performance = go.Figure(go.Scatter(
+        x=cumulative_return.index, 
+        y=cumulative_return, 
+        mode='lines', 
+        name="Portfolio Cumulative Return",
+        line=dict(color=line_color)  # Apply lilac color to the line chart
+    ))
+    fig_performance.update_layout(
+        title="Portfolio Cumulative Return Over Time", 
+        xaxis_title="Date", 
+        yaxis_title="Cumulative Return"
+    )
+    st.plotly_chart(fig_performance)
+
+
+ # Display portfolio metrics
             st.write(f"Expected Annual Return: {portfolio_return * 100:.2f}%")
             st.write(f"Portfolio Volatility: {portfolio_volatility * 100:.2f}%")
             st.write(f"Sharpe Ratio: {sharpe_ratio:.2f}")
-
-            # Display the two charts side by side with different sizes
-            col1, col2 = st.columns([1, 2])  # 1:2 width ratio
-
-            with col1:
-                st.write("### Portfolio Allocation")
-                allocation_chart = go.Figure(go.Pie(labels=selected_symbols, values=weights * 100, hole=0.3))
-                st.plotly_chart(allocation_chart)
-
-            with col2:
-                st.write("### Portfolio Performance Over Time")
-                cumulative_return = (1 + daily_returns.dot(weights)).cumprod() - 1
-                fig_performance = go.Figure(go.Scatter(x=cumulative_return.index, y=cumulative_return, mode='lines', name="Portfolio Cumulative Return"))
-                fig_performance.update_layout(title="Portfolio Cumulative Return Over Time", xaxis_title="Date", yaxis_title="Cumulative Return")
-                st.plotly_chart(fig_performance)
 
