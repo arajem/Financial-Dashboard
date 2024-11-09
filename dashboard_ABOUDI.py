@@ -135,22 +135,41 @@ with tab2:
         fig = go.Figure()
     
     if chart_type == "Line":
-        fig.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Close Price', line=dict(color='lightblue', width=2)))  # Line color changed to blue
+        # Apply the "Magma" colormap for the line chart based on the date index
+        cmap = plt.get_cmap("magma")
+        # Convert datetime index to Unix timestamp for proper numeric normalization
+        timestamps = data.index.astype(np.int64) // 10**9  # Convert to Unix timestamp in seconds
+        norm = plt.Normalize(vmin=timestamps.min(), vmax=timestamps.max())  # Normalize based on timestamp range
+        
+        # Apply the colormap to the Close Price line
+        fig.add_trace(go.Scatter(
+            x=data.index, y=data['Close'], mode='lines', name='Close Price',
+            line=dict(color=cmap(norm(timestamps[0]))),  # Apply the first timestamp color
+            width=2
+        ))
     else:
         fig.add_trace(go.Candlestick(
             x=data.index, open=data['Open'], high=data['High'], low=data['Low'], close=data['Close'], name="Candlestick",
-            increasing_line_color='green', decreasing_line_color='red'  # Changed colors for candlestick
+            increasing_line_color='green', decreasing_line_color='red'  # Candlestick colors
         ))
 
     if interval == "1d":
-        fig.add_trace(go.Scatter(x=data.index, y=data["SMA_50"], mode="lines", name="50-Day SMA", line=dict(color='purple', width=1.5)))  # SMA color changed to orange
+        # Apply a color to the 50-Day SMA line that fits well with the Magma colormap
+        fig.add_trace(go.Scatter(
+            x=data.index, y=data["SMA_50"], mode="lines", name="50-Day SMA",
+            line=dict(color='yellow', width=1.5)  # A contrasting color to Magma for better visibility
+        ))
 
-    fig.add_trace(go.Bar(x=data.index, y=data['Volume'], name='Volume', marker=dict(color='rgba(0, 139, 139)'), opacity=0.3, yaxis="y2"))  # Volume bar color changed
+    fig.add_trace(go.Bar(
+        x=data.index, y=data['Volume'], name='Volume', 
+        marker=dict(color='rgba(0, 139, 139)'), opacity=0.3, yaxis="y2"
+    ))
 
     fig.update_layout(
         height=600, yaxis=dict(title="Price", showgrid=True),
         yaxis2=dict(title="Volume", overlaying="y", side="right", showgrid=False, range=[0, data['Volume'].max()*4]),
-        xaxis=dict(title="Date", showgrid=True), title=f"{stock_symbol} Price Chart ({date_range} - Interval: {interval})"
+        xaxis=dict(title="Date", showgrid=True), 
+        title=f"{stock_symbol} Price Chart ({date_range} - Interval: {interval})"
     )
     st.plotly_chart(fig)
     
