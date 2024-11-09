@@ -72,7 +72,7 @@ if st.sidebar.button("Update Data"):
 stock = yf.Ticker(stock_symbol)
 
 # Create separate tabs for each section
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Summary", "Chart", "Financials", "Monte Carlo Simulation", "Brief Analysis", "Portfolio Management"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Summary", "Chart", "Financials", "Monte Carlo Simulation", "Portfolio Management"])
 
 # Summary tab
 with tab1:
@@ -199,61 +199,9 @@ with tab4:
         plt.ylabel("Price")
         st.pyplot(plt)
 
-# Analysis tab
-with tab5:
-    st.subheader("Brief Analysis")
-    col1, col2 = st.columns(2)
-    with col1:
-        st.write("### Key Financial Metrics")
-        metrics = {
-            "Revenue": stock.financials.loc['Total Revenue'].sum(),
-            "Net Income": stock.financials.loc['Net Income'].sum(),
-            "EPS": stock.info.get('trailingEps', 'N/A'),
-            "P/E Ratio": stock.info.get('trailingPE', 'N/A'),
-            "Debt-to-Equity Ratio": stock.info.get('debtToEquity', 'N/A'),
-            "Return on Equity (ROE)": f"{stock.info.get('returnOnEquity', 'N/A') * 100:.2f}%",
-            # Fetch the dividend yield safely
-dividend_yield = stock.info.get('dividendYield', None)
-
-# Check if the dividend yield is None or invalid, and handle it
-if dividend_yield is not None:
-    dividend_yield = f"{dividend_yield * 100:.2f}%"  # Convert to percentage format
-else:
-    dividend_yield = "N/A"  # Default if not available
-
-# Now you can safely use it in your display
-st.write(f"**Dividend Yield:** {dividend_yield}")
-
-        }
-        metrics_df = pd.DataFrame(list(metrics.items()), columns=['Metric', 'Value'])
-        st.table(metrics_df)
-
-    with col2:
-        st.write("### Stock Performance")
-        performance_data = {
-            "1-Year Price Change (%)": ((data['Close'][-1] - data['Close'][0]) / data['Close'][0]) * 100,
-            "52-Week High": data['Close'].max(),
-            "52-Week Low": data['Close'].min(),
-            "Average Trading Volume": data['Volume'].mean(),
-            "Beta": stock.info.get('beta', 'N/A')
-        }
-        performance_df = pd.DataFrame(list(performance_data.items()), columns=['Metric', 'Value'])
-        st.table(performance_df)
-
-    st.write("### Stock Performance Over Time")
-    fig_line = go.Figure()
-    fig_line.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Closing Price', fill='tozeroy', line=dict(color='#8A2BE2'), fillcolor='#E6E6FA'))
-    fig_line.update_layout(
-        title=f"{stock_symbol} - 1 Year Stock Performance",
-        xaxis_title="Date",
-        yaxis_title="Closing Price (USD)",
-        template="plotly_white"
-    )
-    st.plotly_chart(fig_line)
-
 
 # Portfolio Management Tab
-with tab6:
+with tab5:
     st.subheader("Portfolio Management")
 
     # Select multiple stocks for portfolio
