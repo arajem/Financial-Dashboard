@@ -168,8 +168,8 @@ with tab3:
         st.write(stock.cashflow if period == "Annual" else stock.quarterly_cashflow)
 
 
-#MonteCarlo Simulation Tab
-with tab4: 
+# Monte Carlo Simulation tab
+with tab4:
     st.subheader("Monte Carlo Simulation for Future Stock Prices")
 
     if data.empty:
@@ -193,21 +193,23 @@ with tab4:
         VaR_95 = np.percentile(simulations[-1], 5)
         st.write(f"Value at Risk (VaR) at 95% confidence interval: ${VaR_95:.2f}")
 
-    plt.figure(figsize=(10, 6))
+        # Plot the simulations using the "Magma" colormap
+        plt.figure(figsize=(10, 6))
+        
+        # Use the "Magma" colormap for the simulations
+        cmap = plt.get_cmap("magma")
+        for i in range(n_simulations):
+            plt.plot(simulations[:, i], color=cmap(i / n_simulations))  # Apply colormap
 
-    # Use the "Magma" colormap for the simulations
-    cmap = plt.get_cmap("magma")
-    for i in range(n_simulations):
-    plt.plot(simulations[:, i], color=cmap(i / n_simulations))  # Apply colormap
+        # Use a light grey horizontal line instead of purple
+        current_price_line = plt.axhline(y=last_price, color='lightgrey', linewidth=2)
 
-    current_price_line = plt.axhline(y=last_price, color='maroon', linewidth=2)
-    plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
-    plt.legend([current_price_line], [f'Current stock price: ${last_price:.2f}'])
-    plt.xlabel("Day")
-    plt.ylabel("Price")
-    st.pyplot(plt)
+        plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
+        plt.legend([current_price_line], [f'Current stock price: ${last_price:.2f}'])
+        plt.xlabel("Day")
+        plt.ylabel("Price")
+        st.pyplot(plt)
 
-    
 
 # Portfolio Management Tab
 with tab5:
