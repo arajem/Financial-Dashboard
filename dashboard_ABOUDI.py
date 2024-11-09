@@ -78,32 +78,42 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Summary", "Chart", "Financials", 
 # Summary Tab: Display company and shareholder information
 with tab1:
     st.subheader("Stock Summary")
-    info = stock.info
-    shareholders = stock.major_holders
-    col1, col2 = st.columns(2)
     
-    with col1:
-        # Display key company details
-        st.write(f"**Company:** {info.get('longName', 'N/A')}")
-        st.write(f"**Sector:** {info.get('sector', 'N/A')}")
-        st.write(f"**Industry:** {info.get('industry', 'N/A')}")
-        st.write(f"**Market Cap:** {info.get('marketCap', 'N/A'):,}")
-    
-    with col2:
-        # Display major shareholders
-        st.write("**Major Shareholders**")
-        st.write(shareholders)
+    try:
+        info = stock.info  # Attempt to fetch stock info
+        shareholders = stock.major_holders  # Attempt to fetch shareholder information
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Display key company details
+            st.write(f"**Company:** {info.get('longName', 'N/A')}")
+            st.write(f"**Sector:** {info.get('sector', 'N/A')}")
+            st.write(f"**Industry:** {info.get('industry', 'N/A')}")
+            st.write(f"**Market Cap:** {info.get('marketCap', 'N/A'):,}")
+        
+        with col2:
+            # Display major shareholders
+            st.write("**Major Shareholders**")
+            st.write(shareholders)
+        
+        # Display a short company summary with an option to expand for full description
+        summary = info.get('longBusinessSummary', 'N/A')
+        summary_length = 300
+        if len(summary) > summary_length:
+            short_summary = summary[:summary_length] + "..."
+            st.write(f"**Summary:** {short_summary}")
+            if st.button("Read more about the company"):
+                st.write(f"**Full Summary:** {summary}")
+        else:
+            st.write(f"**Summary:** {summary}")
 
-    # Display a short company summary with option to expand for full description
-    summary = info.get('longBusinessSummary', 'N/A')
-    summary_length = 300
-    if len(summary) > summary_length:
-        short_summary = summary[:summary_length] + "..."
-        st.write(f"**Summary:** {short_summary}")
-        if st.button("Read more about the company"):
-            st.write(f"**Full Summary:** {summary}")
-    else:
-        st.write(f"**Summary:** {summary}")
+    except json.JSONDecodeError:
+        # Handle JSON decode errors, typically from invalid or empty responses
+        st.error("Unable to retrieve stock information at the moment. Please try again later.")
+    except Exception as e:
+        # Catch any other unexpected errors
+        st.error(f"An unexpected error occurred: {e}")
 
 # Chart Tab: Display stock price chart
 with tab2:
