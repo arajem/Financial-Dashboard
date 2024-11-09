@@ -255,3 +255,10 @@ with tab6:
 
     st.write(f"Expected Annual Return: {portfolio_return * 100:.2f}%")
     st.write(f"Portfolio Volatility: {portfolio_volatility * 100:.2f}%")
+
+    # Display time series chart of portfolio's cumulative return
+            st.write("### Portfolio Performance Over Time")
+            cumulative_return = (1 + daily_returns.dot(weights)).cumprod() - 1
+            fig_performance = go.Figure(go.Scatter(x=cumulative_return.index, y=cumulative_return, mode='lines', name="Portfolio Cumulative Return"))
+            fig_performance.update_layout(title="Portfolio Cumulative Return Over Time", xaxis_title="Date", yaxis_title="Cumulative Return")
+            st.plotly_chart(fig_performance)
