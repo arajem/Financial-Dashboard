@@ -6,4 +6,3 @@ matplotlib
 plotly
 datetime 
 requests
-json
