@@ -198,14 +198,14 @@ with tab4:
     # Use the "Magma" colormap for the simulations
     cmap = plt.get_cmap("magma")
     for i in range(n_simulations):
-        plt.plot(simulations[:, i], color=cmap(i / n_simulations))  # Apply colormap
+    plt.plot(simulations[:, i], color=cmap(i / n_simulations))  # Apply colormap
 
-        current_price_line = plt.axhline(y=last_price, color='maroon', linewidth=2)
-        plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
-        plt.legend([current_price_line], [f'Current stock price: ${last_price:.2f}'])
-        plt.xlabel("Day")
-        plt.ylabel("Price")
-        st.pyplot(plt)
+    current_price_line = plt.axhline(y=last_price, color='maroon', linewidth=2)
+    plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
+    plt.legend([current_price_line], [f'Current stock price: ${last_price:.2f}'])
+    plt.xlabel("Day")
+    plt.ylabel("Price")
+    st.pyplot(plt)
 
     
 
