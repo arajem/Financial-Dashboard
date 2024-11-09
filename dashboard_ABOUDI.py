@@ -119,7 +119,7 @@ else:
 
 end_date = datetime.now()
 
-:# Chart tab
+# Chart tab
 with tab2:
     st.subheader("Stock Price Chart")
     interval = st.selectbox("Select Time Interval", ["1d", "1mo"], index=0)
