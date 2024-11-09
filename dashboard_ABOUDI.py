@@ -212,7 +212,18 @@ with tab5:
             "P/E Ratio": stock.info.get('trailingPE', 'N/A'),
             "Debt-to-Equity Ratio": stock.info.get('debtToEquity', 'N/A'),
             "Return on Equity (ROE)": f"{stock.info.get('returnOnEquity', 'N/A') * 100:.2f}%",
-            "Dividend Yield": f"{stock.info.get('dividendYield', 'N/A') * 100:.2f}%"
+            # Fetch the dividend yield safely
+dividend_yield = stock.info.get('dividendYield', None)
+
+# Check if the dividend yield is None or invalid, and handle it
+if dividend_yield is not None:
+    dividend_yield = f"{dividend_yield * 100:.2f}%"  # Convert to percentage format
+else:
+    dividend_yield = "N/A"  # Default if not available
+
+# Now you can safely use it in your display
+st.write(f"**Dividend Yield:** {dividend_yield}")
+
         }
         metrics_df = pd.DataFrame(list(metrics.items()), columns=['Metric', 'Value'])
         st.table(metrics_df)
@@ -241,27 +252,64 @@ with tab5:
     st.plotly_chart(fig_line)
 
 
- # Portfolio Management Tab
+# Portfolio Management Tab
 with tab6:
     st.subheader("Portfolio Management")
 
     # Select multiple stocks for portfolio
     selected_symbols = st.multiselect("Select Stocks for Portfolio", symbols, default=[stock_symbol])
-    weights = [1 / len(selected_symbols)] * len(selected_symbols)  # Equal weights initially
+    
+    # Check if at least one stock is selected
+    if not selected_symbols:
+        st.warning("Please select at least one stock for your portfolio.")
+    else:
+        # Initialize equal weights
+        weights = np.array([1 / len(selected_symbols)] * len(selected_symbols))
 
-    # Allow user to adjust weights
-    for i, symbol in enumerate(selected_symbols):
-        weights[i] = st.slider(f"Weight for {symbol}", 0.0, 1.0, weights[i])
+        # Allow user to adjust weights with sum-to-1 constraint
+        adjusted_weights = []
+        for i, symbol in enumerate(selected_symbols):
+            adjusted_weight = st.slider(f"Weight for {symbol} (%)", 0.0, 100.0, weights[i] * 100.0) / 100
+            adjusted_weights.append(adjusted_weight)
 
-    # Normalize weights to sum to 1
-    weights = np.array(weights)
-    weights /= weights.sum()
+        # Normalize weights to sum to 1
+        weights = np.array(adjusted_weights)
+        weights /= weights.sum()
 
-    # Fetch historical data and calculate portfolio return
-    portfolio_data = yf.download(selected_symbols, start="2023-01-01")["Close"]
-    daily_returns = portfolio_data.pct_change().dropna()
-    portfolio_return = np.dot(daily_returns.mean() * 252, weights)
-    portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(daily_returns.cov() * 252, weights)))
+        # Function to fetch portfolio data with caching
+        @st.cache_data
+        def load_portfolio_data(tickers):
+            return yf.download(tickers, start="2023-01-01")["Close"]
 
-    st.write(f"Expected Annual Return: {portfolio_return * 100:.2f}%")
-    st.write(f"Portfolio Volatility: {portfolio_volatility * 100:.2f}%")
+        # Fetch historical data and calculate portfolio return
+        portfolio_data = load_portfolio_data(selected_symbols)
+        daily_returns = portfolio_data.pct_change().dropna()
+        
+        if daily_returns.empty:
+            st.error("No data available for the selected stocks.")
+        else:
+            # Calculate annualized return and volatility
+            portfolio_return = np.dot(daily_returns.mean() * 252, weights)
+            portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(daily_returns.cov() * 252, weights)))
+            sharpe_ratio = portfolio_return / portfolio_volatility if portfolio_volatility else 0
+
+            # Display portfolio metrics
+            st.write(f"Expected Annual Return: {portfolio_return * 100:.2f}%")
+            st.write(f"Portfolio Volatility: {portfolio_volatility * 100:.2f}%")
+            st.write(f"Sharpe Ratio: {sharpe_ratio:.2f}")
+
+            # Display the two charts side by side with different sizes
+            col1, col2 = st.columns([1, 2])  # 1:2 width ratio
+
+            with col1:
+                st.write("### Portfolio Allocation")
+                allocation_chart = go.Figure(go.Pie(labels=selected_symbols, values=weights * 100, hole=0.3))
+                st.plotly_chart(allocation_chart)
+
+            with col2:
+                st.write("### Portfolio Performance Over Time")
+                cumulative_return = (1 + daily_returns.dot(weights)).cumprod() - 1
+                fig_performance = go.Figure(go.Scatter(x=cumulative_return.index, y=cumulative_return, mode='lines', name="Portfolio Cumulative Return"))
+                fig_performance.update_layout(title="Portfolio Cumulative Return Over Time", xaxis_title="Date", yaxis_title="Cumulative Return")
+                st.plotly_chart(fig_performance)
+
