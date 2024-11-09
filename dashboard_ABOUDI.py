@@ -195,8 +195,8 @@ with tab4:
 
         plt.figure(figsize=(10, 6))
         
-        # Use the "Purples" colormap for the simulations
-        cmap = plt.get_cmap("PuRd")
+        # Use the colormap for the simulations
+        cmap = plt.get_cmap("Spectral")
         for i in range(n_simulations):
             plt.plot(simulations[:, i], color=cmap(i / n_simulations))  # Apply colormap
 
