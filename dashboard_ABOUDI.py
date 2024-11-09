@@ -77,15 +77,24 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Summary", "Chart", "Financials", 
 # Summary tab
 with tab1:
     st.subheader("Stock Summary")
-    info = stock.info
-    shareholders = stock.major_holders
+    
+    # Attempt to retrieve stock info
+    info = stock.info if stock else {}
+    shareholders = stock.major_holders if stock else None
     col1, col2 = st.columns(2)
 
     with col1:
+        # Safely retrieve and display each field with fallback for missing data
         st.write(f"**Company:** {info.get('longName', 'N/A')}")
         st.write(f"**Sector:** {info.get('sector', 'N/A')}")
         st.write(f"**Industry:** {info.get('industry', 'N/A')}")
-        st.write(f"**Market Cap:** {info.get('marketCap', 'N/A'):,}")
+
+        # Handle market cap safely
+        market_cap = info.get('marketCap', None)
+        if market_cap:
+            st.write(f"**Market Cap:** {market_cap:,}")
+        else:
+            st.write("**Market Cap:** N/A")
 
     with col2:
         st.write("**Major Shareholders**")
