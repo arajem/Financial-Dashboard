@@ -169,7 +169,7 @@ with tab3:
 
 
 #MonteCarlo Simulation Tab
-    with tab4: 
+with tab4: 
     st.subheader("Monte Carlo Simulation for Future Stock Prices")
 
     if data.empty:
