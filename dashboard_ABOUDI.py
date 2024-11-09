@@ -7,6 +7,7 @@ import plotly.graph_objs as go
 from datetime import datetime, timedelta
 import requests
 import matplotlib.dates as mdates
+from matplotlib import colormaps
 
 
 
@@ -167,37 +168,47 @@ with tab3:
         st.write(stock.cashflow if period == "Annual" else stock.quarterly_cashflow)
 
 # Monte Carlo Simulation tab
-with tab4:
-    st.subheader("Monte Carlo Simulation for Future Stock Prices") 
-    if data.empty:
-        st.error("No data available for Monte Carlo simulation.")
-    else:
-        # Ensure the following lines are indented correctly under the 'else' statement
-        n_simulations = st.selectbox("Number of Simulations", [200, 500, 1000])
-        time_horizon = st.selectbox("Time Horizon (days)", [30, 60, 90])
-        daily_returns = data['Close'].pct_change().dropna()
-        mean_return = daily_returns.mean()
-        std_dev = daily_returns.std()
-        simulations = np.zeros((time_horizon, n_simulations))
-        last_price = data['Close'][-1]
+import numpy as np
+import matplotlib.pyplot as plt
+import streamlit as st
 
-        for i in range(n_simulations):
-            price = last_price
-            for t in range(time_horizon):
-                price *= (1 + np.random.normal(mean_return, std_dev))
-                simulations[t, i] = price
+# Your Monte Carlo Simulation code
+st.subheader("Monte Carlo Simulation for Future Stock Prices")
 
-        VaR_95 = np.percentile(simulations[-1], 5)
-        st.write(f" Value at Risk (VaR) at 95% confidence interval: ${VaR_95:.2f}")
+if data.empty:
+    st.error("No data available for Monte Carlo simulation.")
+else:
+    # Ensure the following lines are indented correctly under the 'else' statement
+    n_simulations = st.selectbox("Number of Simulations", [200, 500, 1000])
+    time_horizon = st.selectbox("Time Horizon (days)", [30, 60, 90])
+    daily_returns = data['Close'].pct_change().dropna()
+    mean_return = daily_returns.mean()
+    std_dev = daily_returns.std()
+    simulations = np.zeros((time_horizon, n_simulations))
+    last_price = data['Close'][-1]
 
-        plt.figure(figsize=(10, 6))
-        plt.plot(simulations)
-        current_price_line = plt.axhline(y=last_price, color='purple', linewidth=2) 
-        plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
-        plt.legend([current_price_line], [f'Current stock price: ${last_price:.2f}'])
-        plt.xlabel("Day")
-        plt.ylabel("Price")
-        st.pyplot(plt)
+    for i in range(n_simulations):
+        price = last_price
+        for t in range(time_horizon):
+            price *= (1 + np.random.normal(mean_return, std_dev))
+            simulations[t, i] = price
+
+    VaR_95 = np.percentile(simulations[-1], 5)
+    st.write(f"Value at Risk (VaR) at 95% confidence interval: ${VaR_95:.2f}")
+
+    plt.figure(figsize=(10, 6))
+    
+    # Use the "Purples" colormap for the simulations
+    cmap = plt.get_cmap("Purples")
+    for i in range(n_simulations):
+        plt.plot(simulations[:, i], color=cmap(i / n_simulations))  # Apply colormap
+
+    current_price_line = plt.axhline(y=last_price, color='purple', linewidth=2)
+    plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
+    plt.legend([current_price_line], [f'Current stock price: ${last_price:.2f}'])
+    plt.xlabel("Day")
+    plt.ylabel("Price")
+    st.pyplot(plt)
 
 
 # Portfolio Management Tab
