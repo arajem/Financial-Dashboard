@@ -280,34 +280,46 @@ with tab5:
                 # Display the two charts side by side with different sizes
                 col1, col2 = st.columns([1, 2])  # 1:2 width ratio
 
-                # Custom purple and lilac colors
-                pie_colors = ['#9B59B6', '#8E44AD', '#7F3FBF', '#6A2C8B', '#4B2A7F']  # Shades of purple
-                line_color = '#8E44AD'  # Lilac color for line chart
+                # Create a color map based on sectors
+                sector_colors = {
+                    sector: f"rgb({np.random.randint(100, 255)}, {np.random.randint(100, 255)}, {np.random.randint(100, 255)})"
+                    for sector in selected_sectors
+                }
+
+                # Assign a color to each stock based on its sector
+                stock_colors = [sector_colors[sp500_data.loc[sp500_data['Symbol'] == symbol, 'GICS Sector'].values[0]]
+                                for symbol in selected_symbols]
 
                 with col1:
                     st.write("### Portfolio Allocation")
-                    # Create a pie chart with custom colors
+                    # Create a pie chart with colors for sectors
                     allocation_chart = go.Figure(go.Pie(
                         labels=selected_symbols, 
                         values=weights * 100, 
                         hole=0.3,
-                        marker=dict(colors=pie_colors)  # Apply custom colors
+                        marker=dict(colors=stock_colors)  # Apply sector-based colors
                     ))
                     st.plotly_chart(allocation_chart)
 
                 with col2:
                     st.write("### Portfolio Performance Over Time")
                     cumulative_return = (1 + daily_returns.dot(weights)).cumprod() - 1
-                    fig_performance = go.Figure(go.Scatter(
-                        x=cumulative_return.index, 
-                        y=cumulative_return, 
-                        mode='lines', 
-                        name="Portfolio Cumulative Return",
-                        line=dict(color=line_color)  # Apply lilac color to the line chart
-                    ))
+                    fig_performance = go.Figure()
+
+                    # Plot each stock's performance with a different color
+                    for i, symbol in enumerate(selected_symbols):
+                        fig_performance.add_trace(go.Scatter(
+                            x=cumulative_return.index,
+                            y=(1 + daily_returns[symbol] * weights[i]).cumprod() - 1,
+                            mode='lines',
+                            name=symbol,
+                            line=dict(color=stock_colors[i])  # Use the sector color for each stock
+                        ))
+
                     fig_performance.update_layout(
                         title="Portfolio Cumulative Return Over Time", 
                         xaxis_title="Date", 
                         yaxis_title="Cumulative Return"
                     )
                     st.plotly_chart(fig_performance)
+
