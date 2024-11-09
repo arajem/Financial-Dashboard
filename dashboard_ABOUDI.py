@@ -137,7 +137,7 @@ with tab2:
     if chart_type == "Line":
         # Apply the "Magma" colormap for the line chart based on the date index
         cmap = plt.get_cmap("magma")
-        norm = plt.Normalize(vmin=data.index.min(), vmax=data.index.max())  # Normalize the date range for the color map
+        norm = plt.Normalize(vmin=data.index.astype(int).min(), vmax=data.index.astype(int).max())  # Normalize the date range for the color map
         for i in range(len(data) - 1):
             fig.add_trace(go.Scatter(
                 x=[data.index[i], data.index[i + 1]],
