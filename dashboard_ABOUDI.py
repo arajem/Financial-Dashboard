@@ -119,11 +119,6 @@ else:
 
 end_date = datetime.now()
 
-import numpy as np
-import matplotlib.pyplot as plt
-import plotly.graph_objects as go
-import pandas as pd
-
 # Chart tab
 with tab2:
     st.subheader("Stock Price Chart")
@@ -172,6 +167,7 @@ with tab2:
         xaxis=dict(title="Date", showgrid=True), title=f"{stock_symbol} Price Chart ({date_range} - Interval: {interval})"
     )
     st.plotly_chart(fig)
+
 
 
 # Financials tab
