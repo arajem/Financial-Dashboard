@@ -133,9 +133,20 @@ with tab2:
             data["SMA_50"] = data["Close"].rolling(window=50).mean()
 
         fig = go.Figure()
-    
+
     if chart_type == "Line":
-        fig.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Close Price', line=dict(color='lightblue', width=2)))  # Line color changed to blue
+        # Apply the "Magma" colormap for the line chart based on the date index
+        cmap = plt.get_cmap("magma")
+        norm = plt.Normalize(vmin=data.index.min(), vmax=data.index.max())  # Normalize the date range for the color map
+        for i in range(len(data) - 1):
+            fig.add_trace(go.Scatter(
+                x=[data.index[i], data.index[i + 1]],
+                y=[data['Close'][i], data['Close'][i + 1]],
+                mode='lines',
+                name='Close Price',
+                line=dict(color=cmap(norm(data.index[i]))),  # Apply Magma colormap
+                opacity=0.7
+            ))
     else:
         fig.add_trace(go.Candlestick(
             x=data.index, open=data['Open'], high=data['High'], low=data['Low'], close=data['Close'], name="Candlestick",
@@ -143,7 +154,7 @@ with tab2:
         ))
 
     if interval == "1d":
-        fig.add_trace(go.Scatter(x=data.index, y=data["SMA_50"], mode="lines", name="50-Day SMA", line=dict(color='purple', width=1.5)))  # SMA color changed to orange
+        fig.add_trace(go.Scatter(x=data.index, y=data["SMA_50"], mode="lines", name="50-Day SMA", line=dict(color='purple', width=1.5)))  # SMA color changed to purple
 
     fig.add_trace(go.Bar(x=data.index, y=data['Volume'], name='Volume', marker=dict(color='rgba(0, 139, 139)'), opacity=0.3, yaxis="y2"))  # Volume bar color changed
 
