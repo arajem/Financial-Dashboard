@@ -195,3 +195,26 @@ with tab4:
         plt.legend([current_price_line], [f'Current stock price: ${last_price:.2f}'])
         plt.xlabel("Day")
 
+# Brief Analysis Tab: Display basic financial metrics
+with tab5:
+    st.subheader("Brief Analysis")
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Beta", stock.info.get("beta", "N/A"))
+    col2.metric("P/E Ratio", stock.info.get("trailingPE", "N/A"))
+    col3.metric("Earnings per Share (EPS)", stock.info.get("trailingEps", "N/A"))
+
+# Portfolio Management Tab: Allows users to build a custom portfolio
+with tab6:
+    st.subheader("Portfolio Builder")
+    st.write("Select up to 3 stocks and specify their weights to build a portfolio.")
+    
+    # Allow users to select up to 3 stocks and specify weights
+    selected_stocks = [st.selectbox("Stock Symbol", symbols) for _ in range(3)]
+    weights = [st.number_input("Weight (%)", min_value=0, max_value=100, value=0) for _ in range(3)]
+    
+    if sum(weights) != 100:
+        st.warning("Total weight should be 100% for a balanced portfolio.")
+    else:
+        st.success("Portfolio is balanced!")
+        
+# Users can view general stock information, examine detailed financials, conduct simulations, perform brief analysis, and build portfolios.
