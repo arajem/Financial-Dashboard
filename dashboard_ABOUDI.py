@@ -157,14 +157,26 @@ with tab2:
 # Financials tab
 with tab3:
     st.subheader("Financial Statements")
-    statement_type = st.selectbox("Statement Type", ["Income Statement", "Balance Sheet", "Cash Flow"])
-    period = st.selectbox("Period", ["Annual", "Quarterly"])
+    
+    # Create two columns
+    col1, col2 = st.columns(2)
+    
+    # Statement type selection in the first column
+    with col1:
+        statement_type = st.selectbox("Statement Type", ["Income Statement", "Balance Sheet", "Cash Flow"])
+    
+    # Period selection in the second column
+    with col2:
+        period = st.selectbox("Period", ["Annual", "Quarterly"])
+    
+    # Display the selected financial statement based on the type and period
     if statement_type == "Income Statement":
         st.write(stock.financials if period == "Annual" else stock.quarterly_financials)
     elif statement_type == "Balance Sheet":
         st.write(stock.balance_sheet if period == "Annual" else stock.quarterly_balance_sheet)
     else:
         st.write(stock.cashflow if period == "Annual" else stock.quarterly_cashflow)
+
 
 
 # Monte Carlo Simulation tab
