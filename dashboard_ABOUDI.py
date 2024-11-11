@@ -57,7 +57,7 @@ st.sidebar.write(f"**Selected Company:** {company_name}")
 st.sidebar.write(f"**Selected Date Range:** {date_range}")
 
 # Button to get and update data
-if st.sidebar.button("Update Data"):
+if st.sidebar.button("Data HAIFHJGVBERO"):
     # Load stock data
     stock = yf.Ticker(stock_symbol)
     data = stock.history(start=start_date, end=end_date)
