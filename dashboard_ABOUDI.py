@@ -12,7 +12,6 @@ import matplotlib.pyplot as plt
 import plotly.graph_objs as go
 from datetime import datetime, timedelta
 import requests
-import url
 import matplotlib.dates as mdates
 from matplotlib import colormaps
 
