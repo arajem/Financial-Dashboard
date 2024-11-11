@@ -2,6 +2,8 @@
 # FINANCIAL DASHBOARD  - Arajem ABOUDI
 # Course of Financial Programming - Professor Minh Trung Hoai PHAN
 ###############################################################################
+
+# Libraries
 import streamlit as st
 import yfinance as yf
 import pandas as pd
@@ -10,6 +12,7 @@ import matplotlib.pyplot as plt
 import plotly.graph_objs as go
 from datetime import datetime, timedelta
 import requests
+import url
 import matplotlib.dates as mdates
 from matplotlib import colormaps
 
@@ -27,7 +30,7 @@ def load_sp500_symbols():
 symbols, company_data = load_sp500_symbols()
 
 
-# Define dashboard layout
+# Define dashboard Sidebar and layout
 st.sidebar.title("📈 Arajem Aboudi - Financial Dashboard 📉")
 
 st.sidebar.subheader("Make your selection")
@@ -54,7 +57,7 @@ st.sidebar.write(f"**Selected Company:** {company_name}")
 # Display the selected date range in the sidebar
 st.sidebar.write(f"**Selected Date Range:** {date_range}")
 
-# Button to fetch and update data
+# Button to get and update data
 if st.sidebar.button("Update Data"):
     # Load stock data
     stock = yf.Ticker(stock_symbol)
