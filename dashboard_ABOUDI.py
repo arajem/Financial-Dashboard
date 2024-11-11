@@ -229,7 +229,7 @@ with tab4:
         plt.ylabel("Price")
         st.pyplot(plt)
 
-        st.write(f"Value at Risk (VaR) at 95% confidence interval: ${VaR_95:.2f}")
+        st.write(f"Value at Risk (VaR) at 95% confidence interval: **${VaR_95:.2f}**")
 
 # Portfolio Management Tab
 with tab5:
