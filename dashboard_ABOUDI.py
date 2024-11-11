@@ -181,7 +181,7 @@ with tab3:
 
 # Monte Carlo Simulation tab
 with tab4:
-    st.subheader("Monte Carlo Simulation for Future Stock Prices")
+    st.subheader("Monte Carlo Simulation")
 
     if data.empty:
         st.error("No data available for Monte Carlo simulation.")
