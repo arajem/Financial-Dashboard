@@ -1,3 +1,7 @@
+###############################################################################
+# FINANCIAL DASHBOARD  - Arajem ABOUDI
+# Course of Financial Programming - Professor Minh Trung Hoai PHAN
+###############################################################################
 import streamlit as st
 import yfinance as yf
 import pandas as pd
