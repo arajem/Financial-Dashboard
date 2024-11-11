@@ -43,8 +43,7 @@ date_ranges = {
     "YTD": timedelta(days=(datetime.now() - datetime(datetime.now().year, 1, 1)).days),
     "1Y": timedelta(days=365),
     "3Y": timedelta(days=3 * 365),
-    "5Y": timedelta(days=5 * 365),
-    "ALL": None  # This will use all available data
+    "5Y": timedelta(days=5 * 365)
 }
 date_range = st.sidebar.selectbox("Select Date Range", list(date_ranges.keys()))
 start_date = datetime.now() - date_ranges[date_range] if date_ranges[date_range] else None
@@ -130,14 +129,14 @@ end_date = datetime.now()
 # Chart tab
 with tab2:
     st.subheader("Stock Price Chart")
-    interval = st.selectbox("Select Time Interval", ["1d", "1mo", "1Y"], index=0)
+    interval = st.selectbox("Select Time Interval", ["1d", "1mo"], index=0)
     chart_type = st.selectbox("Select Chart Type", ["Line", "Candlestick"], index=0)
     data = stock.history(start=start_date, end=end_date, interval=interval)
 
     if data.empty:
         st.error("No data available for the selected date range and interval.")
     else:
-        if interval in ["1d","1mo","1Y"]:
+        if interval in ["1d","1mo"]:
             data["SMA_50"] = data["Close"].rolling(window=50).mean()
 
         fig = go.Figure()
@@ -150,7 +149,7 @@ with tab2:
             increasing_line_color='green', decreasing_line_color='red'  # Changed colors for candlestick
         ))
 
-    if interval in ["1d","1mo","1Y"]:
+    if interval in ["1d","1mo"]:
         fig.add_trace(go.Scatter(x=data.index, y=data["SMA_50"], mode="lines", name="50-Day SMA", line=dict(color='purple', width=1.5)))  # SMA color changed to orange
 
     fig.add_trace(go.Bar(x=data.index, y=data['Volume'], name='Volume', marker=dict(color='rgba(0, 139, 139)'), opacity=0.3, yaxis="y2"))  # Volume bar color changed
