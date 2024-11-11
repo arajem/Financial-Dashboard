@@ -186,9 +186,17 @@ with tab4:
     if data.empty:
         st.error("No data available for Monte Carlo simulation.")
     else:
-        # Ensure the following lines are indented correctly under the 'else' statement
-        n_simulations = st.selectbox("Number of Simulations", [200, 500, 1000])
-        time_horizon = st.selectbox("Time Horizon (days)", [30, 60, 90])
+        # Create two columns
+        col1, col2 = st.columns(2)
+        
+        # Number of simulations in the first column
+        with col1:
+            n_simulations = st.selectbox("Number of Simulations", [200, 500, 1000])
+        
+        # Time horizon in the second column
+        with col2:
+            time_horizon = st.selectbox("Time Horizon (days)", [30, 60, 90])
+        
         daily_returns = data['Close'].pct_change().dropna()
         mean_return = daily_returns.mean()
         std_dev = daily_returns.std()
