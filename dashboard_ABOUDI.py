@@ -210,7 +210,7 @@ with tab4:
                 simulations[t, i] = price
 
         VaR_95 = np.percentile(simulations[-1], 5)
-        st.write(f"Value at Risk (VaR) at 95% confidence interval: ${VaR_95:.2f}")
+        
 
         # Plot the simulations using the "Magma" colormap
         plt.figure(figsize=(10, 6))
@@ -229,6 +229,7 @@ with tab4:
         plt.ylabel("Price")
         st.pyplot(plt)
 
+        st.write(f"Value at Risk (VaR) at 95% confidence interval: ${VaR_95:.2f}")
 
 # Portfolio Management Tab
 with tab5:
