@@ -361,26 +361,3 @@ with tab5:
             st.write(f"Sharpe Ratio: {sharpe_ratio:.2f}")
 
     
-
-
-#Import Yahoo image and source 
-# Use st.markdown to add custom CSS for floating the image to the right
-st.markdown(
-    """
-    <style>
-    .right-align-img {
-        float: right;
-        margin-left: 20px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# Display the image with the custom class
-st.markdown(
-    """
-    <img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/Yahoo%21_Finance_logo_2021.png" 
-         width="100" class="right-align-img">
-    <p style="text-align: right;">Source: Yahoo Finance</
-
