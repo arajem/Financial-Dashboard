@@ -364,4 +364,4 @@ with tab5:
 
 
 #Import Yahoo image and source 
-st.image("https://upload.wikimedia.org/wikipedia/commons/8/8f/Yahoo%21_Finance_logo_2021.png", caption="Source: Yahoo Finance", width=175)
+st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/8/8f/Yahoo%21_Finance_logo_2021.png", caption="Source: Yahoo Finance", width=150)
