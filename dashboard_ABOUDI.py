@@ -361,6 +361,6 @@ with tab5:
 
 col1, col2 = st.columns([1, 5])
 with col1:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/8/8f/Yahoo%21_Finance_logo_2021.png", caption="Source: Yahoo Finance", width=100)
-with col2:
     st.write("")
+with col2:
+    st.image("https://upload.wikimedia.org/wikipedia/commons/8/8f/Yahoo%21_Finance_logo_2021.png", caption="Source: Yahoo Finance", width=100)
