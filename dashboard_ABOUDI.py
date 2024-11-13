@@ -359,5 +359,5 @@ with tab5:
             st.write(f"Sharpe Ratio: {sharpe_ratio:.2f}")
 
 
-st.image("https://en.wikipedia.org/wiki/Yahoo_Finance#/media/File:Yahoo!_Finance_logo_2021.png", caption="Source: Yahoo Finance", use_column_width=True)
+st.image("https://upload.wikimedia.org/wikipedia/commons/8/8f/Yahoo%21_Finance_logo_2021.png", caption="Source: Yahoo Finance", use_column_width=True)
 
