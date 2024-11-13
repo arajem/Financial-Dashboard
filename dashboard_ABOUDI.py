@@ -358,4 +358,6 @@ with tab5:
             st.write(f"Portfolio Volatility: {portfolio_volatility * 100:.2f}%")
             st.write(f"Sharpe Ratio: {sharpe_ratio:.2f}")
 
-st.image('C:/Users/Source/Downloads/yahoo_logo.png', width=100)
+
+st.image("https://en.wikipedia.org/wiki/Yahoo_Finance#/media/File:Yahoo!_Finance_logo_2021.png", caption="Source: Yahoo Finance", use_column_width=True)
+
