@@ -359,7 +359,7 @@ with tab5:
             st.write(f"Sharpe Ratio: {sharpe_ratio:.2f}")
 
 
-col1, col2 = st.columns([1, 5])
+col1, col2 = st.columns([1, 35])
 with col1:
     st.write("")
 with col2:
