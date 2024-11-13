@@ -81,12 +81,10 @@ if st.sidebar.button("Update Data "):
 # Load stock data for the selected symbol
 stock = yf.Ticker(stock_symbol)
 
+
+
 # Create separate tabs for each section
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["Summary", "Chart", "Financials", "Monte Carlo Simulation", "Portfolio Management"])
-
-
-#Import Yahoo image and source 
-    st.image("https://upload.wikimedia.org/wikipedia/commons/8/8f/Yahoo%21_Finance_logo_2021.png", caption="Source: Yahoo Finance", width=100)
 
 # Summary tab
 with tab1:
@@ -362,4 +360,5 @@ with tab5:
             st.write(f"Portfolio Volatility: {portfolio_volatility * 100:.2f}%")
             st.write(f"Sharpe Ratio: {sharpe_ratio:.2f}")
 
-
+#Import Yahoo image and source 
+    st.image("https://upload.wikimedia.org/wikipedia/commons/8/8f/Yahoo%21_Finance_logo_2021.png", caption="Source: Yahoo Finance", width=175)
