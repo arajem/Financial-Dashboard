@@ -76,14 +76,17 @@ if st.sidebar.button("Update Data "):
         file_name=f"{stock_symbol}_data_{date_range}.csv",
         mime="text/csv"
     )
-    #Import Yahoo image and source 
-    st.image("https://upload.wikimedia.org/wikipedia/commons/8/8f/Yahoo%21_Finance_logo_2021.png", caption="Source: Yahoo Finance", width=100)
+    
 
 # Load stock data for the selected symbol
 stock = yf.Ticker(stock_symbol)
 
 # Create separate tabs for each section
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["Summary", "Chart", "Financials", "Monte Carlo Simulation", "Portfolio Management"])
+
+
+#Import Yahoo image and source 
+    st.image("https://upload.wikimedia.org/wikipedia/commons/8/8f/Yahoo%21_Finance_logo_2021.png", caption="Source: Yahoo Finance", width=100)
 
 # Summary tab
 with tab1:
