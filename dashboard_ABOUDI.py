@@ -30,7 +30,7 @@ symbols, company_data = load_sp500_symbols()
 
 
 # Define dashboard Sidebar and layout
-st.sidebar.title("📈 Arajem Aboudi - Financial Dashboard 📉")
+st.sidebar.title("📈 Your All-in-One Toolkit for Smarter Investing 📉")
 
 st.sidebar.subheader("Make your selection")
 stock_symbol = st.sidebar.selectbox("Select a stock", symbols)
