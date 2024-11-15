@@ -246,15 +246,15 @@ with tab4:
 with tab5:
     st.subheader("Portfolio Management")
 
-    #Functionality of the app:
-        st.write("""
-            The "Portfolio Management" tab in this dashboard allows you to create and monitor a custom stock portfolio. 
-    First, you can choose specific sectors and stocks, tailoring your investments to industries you believe in. 
+# Paragraph description
+    st.write("""
+The "Portfolio Management" tab in this dashboard allows you to create and monitor a custom stock portfolio. 
+First, you can choose specific sectors and stocks, tailoring your investments to industries you believe in. 
 With adjustable sliders, you set the percentage weight for each stock, giving you control over the balance of your portfolio. 
-Once configured, you’ll see a visual breakdown of your portfolio allocation with a pie chart, 
-as well as a performance graph that tracks the portfolio’s cumulative return over time. 
-This tool provides a clear and interactive way to explore how your selected investments perform together, helping you make informed investment decisions.
-""")   
+Once configured, you’ll see a visual breakdown of your portfolio allocation with a pie chart, as well as a performance graph 
+that tracks the portfolio’s cumulative return over time. This tool provides a clear and interactive way to explore how your 
+selected investments perform together, helping you make informed investment decisions.
+""")  
 
     # Fetch S&P 500 companies and their sectors from Wikipedia
     @st.cache_data
