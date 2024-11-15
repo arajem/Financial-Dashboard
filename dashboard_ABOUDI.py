@@ -248,7 +248,7 @@ with tab5:
 
 # Paragraph description
     st.write("""
-The "Portfolio Management" tab in this dashboard allows you to create and monitor a custom stock portfolio. 
+The tab in this dashboard allows the user to create and monitor a custom stock portfolio. 
 First, you can choose specific sectors and stocks, tailoring your investments to industries you believe in. 
 With adjustable sliders, you set the percentage weight for each stock, giving you control over the balance of your portfolio. 
 Once configured, you’ll see a visual breakdown of your portfolio allocation with a pie chart, as well as a performance graph 
