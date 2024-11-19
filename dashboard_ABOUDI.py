@@ -15,27 +15,25 @@ import requests
 import matplotlib.dates as mdates
 from matplotlib import colormaps
 
-
-
 # Fetch the S&P 500 stock symbols from Wikipedia
-@st.cache_data  # Cache to avoid re-downloading data
+@st.cache_data  # Cache the result to improve performance
 def load_sp500_symbols():
     url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
-    html = requests.get(url).text
-    sp500 = pd.read_html(html)[0]  # Wikipedia table is the first in the list
+    html = requests.get(url).text  # Get the HTML content of the page
+    sp500 = pd.read_html(html)[0]  # Parse the first table containing S&P 500 data
     return sp500['Symbol'].tolist(), sp500[['Symbol', 'Security']]
 
-# Load S&P 500 symbols and names
+# Load S&P 500 symbols and associated company names
 symbols, company_data = load_sp500_symbols()
-
 
 # Define dashboard Sidebar and layout
 st.sidebar.title("📈 Your All-in-One Toolkit for Smarter Investing 📉")
-
 st.sidebar.subheader("Make your selection")
+
+# Dropdown to select a stock symbol
 stock_symbol = st.sidebar.selectbox("Select a stock", symbols)
 
-# Options for date range
+# Define commonly used date ranges for stock data
 date_ranges = {
     "1M": timedelta(days=30),
     "3M": timedelta(days=90),
@@ -46,69 +44,57 @@ date_ranges = {
     "5Y": timedelta(days=5 * 365)
 }
 
-# Get start date based on selected range
+# Get start and end dates based on the user's selection
 date_range = st.sidebar.selectbox("Select Date Range", list(date_ranges.keys()))
 start_date = datetime.now() - date_ranges[date_range] if date_ranges[date_range] else None
 end_date = datetime.now()
 
-
-# Display selected stock name
+# Display the selected stock's name and date range in the sidebar
 company_name = company_data[company_data['Symbol'] == stock_symbol]['Security'].values[0]
 st.sidebar.write(f"**Selected Company:** {company_name}")
-
-# Display the selected date range in the sidebar
 st.sidebar.write(f"**Selected Date Range:** {date_range}")
 
-# Button to get and update data
-if st.sidebar.button("Update Data "):
-    # Load stock data
-    stock = yf.Ticker(stock_symbol)
-    data = stock.history(start=start_date, end=end_date)
-    st.write("Data has been updated.")
+# Button to fetch and update stock data
+if st.sidebar.button("Update Data"):
+    stock = yf.Ticker(stock_symbol)  # Fetch the stock data
+    data = stock.history(start=start_date, end=end_date)  # Retrieve historical data
+    st.write("Data has been updated.")  # Inform the user
 
-    # Store the CSV data in a variable
+    # Enable the user to download the updated data
     csv_data = data.to_csv().encode('utf-8')
-
-    # Display the download button only after data is fetched
     st.sidebar.download_button(
         label="Download Updated Data as CSV",
         data=csv_data,
         file_name=f"{stock_symbol}_data_{date_range}.csv",
         mime="text/csv"
     )
-    
 
-st.sidebar.write("")
-st.sidebar.write("")
-st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/8/8f/Yahoo%21_Finance_logo_2021.png", caption="Source: Yahoo Finance", width=175)
-st.sidebar.write("")
-st.sidebar.write("")
+# Add a sidebar image for visual appeal
+st.sidebar.image(
+    "https://upload.wikimedia.org/wikipedia/commons/8/8f/Yahoo%21_Finance_logo_2021.png",
+    caption="Source: Yahoo Finance",
+    width=175
+)
 st.sidebar.write("**App made by Arajem ABOUDI - MBD 2024/25**")
 
-# Load stock data for the selected symbol
+# Load stock data for the selected stock symbol
 stock = yf.Ticker(stock_symbol)
 
-
-
-# Create separate tabs for each section
+# Create tabs for different sections of the dashboard
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["Summary", "Chart", "Financials", "Monte Carlo Simulation", "Portfolio Management"])
 
-# Summary tab
+# Summary Tab
 with tab1:
     st.subheader("Stock Summary")
-    
-    # Attempt to retrieve stock info
-    info = stock.info if stock else {}
+    info = stock.info if stock else {}  # Fetch stock information
     shareholders = stock.major_holders if stock else None
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns(2)  # Two-column layout
 
     with col1:
-        # Safely retrieve and display each field with fallback for missing data
+        # Display company details with fallback for missing information
         st.write(f"**Company:** {info.get('longName', 'N/A')}")
         st.write(f"**Sector:** {info.get('sector', 'N/A')}")
         st.write(f"**Industry:** {info.get('industry', 'N/A')}")
-
-        # Handle market cap safely
         market_cap = info.get('marketCap', None)
         if market_cap:
             st.write(f"**Market Cap:** {market_cap:,}")
@@ -116,9 +102,11 @@ with tab1:
             st.write("**Market Cap:** N/A")
 
     with col2:
+        # Display major shareholders information
         st.write("**Major Shareholders**")
         st.write(shareholders)
 
+    # Display a truncated business summary
     summary = info.get('longBusinessSummary', 'N/A')
     summary_length = 300
     if len(summary) > summary_length:
@@ -139,39 +127,69 @@ end_date = datetime.now()
 
 # Chart tab
 with tab2:
-    st.subheader("Stock Price Chart")
-    interval = st.selectbox("Select Time Interval", ["1d", "1mo"], index=0) 
+    st.subheader("Stock Price Chart")  
+
+    # User input: Time interval selection for the stock data
+    interval = st.selectbox("Select Time Interval", ["1d", "1mo"], index=0)
+
+    # User input: Chart type selection - Line or Candlestick
     chart_type = st.selectbox("Select Chart Type", ["Line", "Candlestick"], index=0)
+
+    # Fetching stock data for the selected time range and interval
     data = stock.history(start=start_date, end=end_date, interval=interval)
 
     if data.empty:
+        # Error message if no data is available
         st.error("No data available for the selected date range and interval.")
     else:
-        if interval in ["1d","1mo"]:
+        # Calculate the 50-Day Simple Moving Average (SMA) for daily or monthly intervals
+        if interval in ["1d", "1mo"]:
             data["SMA_50"] = data["Close"].rolling(window=50).mean()
 
+        # Initialize the Plotly figure
         fig = go.Figure()
     
+    # Plot the selected chart type
     if chart_type == "Line":
-        fig.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Close Price', line=dict(color='lightblue', width=2)))  # Line color changed to blue
+        # Add line trace for closing price with a light blue color
+        fig.add_trace(go.Scatter(
+            x=data.index, y=data['Close'], mode='lines', name='Close Price', 
+            line=dict(color='lightblue', width=2)
+        ))
     else:
-       ig.add_trace(go.Candlestick(
+        # Add candlestick trace with green for increasing and red for decreasing prices
+        fig.add_trace(go.Candlestick(
             x=data.index, open=data['Open'], high=data['High'], low=data['Low'], close=data['Close'], name="Candlestick",
-            increasing_line_color='green', decreasing_line_color='red'  # Changed colors for candlestick
+            increasing_line_color='green', decreasing_line_color='red'
         ))
 
-    if interval in ["1d","1mo"]:
-        fig.add_trace(go.Scatter(x=data.index, y=data["SMA_50"], mode="lines", name="50-Day SMA", line=dict(color='purple', width=1.5)))  # SMA color changed to purple
+    # Add 50-Day SMA line for daily or monthly intervals
+    if interval in ["1d", "1mo"]:
+        fig.add_trace(go.Scatter(
+            x=data.index, y=data["SMA_50"], mode="lines", name="50-Day SMA", 
+            line=dict(color='purple', width=1.5)
+        ))
 
-    fig.add_trace(go.Bar(x=data.index, y=data['Volume'], name='Volume', marker=dict(color='rgba(0, 139, 139)'), opacity=0.3, yaxis="y2"))  # Volume bar color changed
+    # Add volume bar chart with a dark cyan color and transparency
+    fig.add_trace(go.Bar(
+        x=data.index, y=data['Volume'], name='Volume', 
+        marker=dict(color='rgba(0, 139, 139)'), opacity=0.3, yaxis="y2"
+    ))
 
+    # Customize the layout of the chart
     fig.update_layout(
-        height=600, yaxis=dict(title="Price", showgrid=True),
-        yaxis2=dict(title="Volume", overlaying="y", side="right", showgrid=False, range=[0, data['Volume'].max()*4]),
-        xaxis=dict(title="Date", showgrid=True), title=f"{stock_symbol} Price Chart ({date_range} - Interval: {interval})"
+        height=600,  # Set the height of the chart
+        yaxis=dict(title="Price", showgrid=True),  # Primary y-axis for price
+        yaxis2=dict(  # Secondary y-axis for volume
+            title="Volume", overlaying="y", side="right", showgrid=False, 
+            range=[0, data['Volume'].max() * 4]
+        ),
+        xaxis=dict(title="Date", showgrid=True),  # x-axis for dates
+        title=f"{stock_symbol} Price Chart ({date_range} - Interval: {interval})"  # Chart title
     )
-    st.plotly_chart(fig)
     
+    st.plotly_chart(fig)
+
 # Financials tab
 with tab3:
     st.subheader("Financial Statements")
@@ -179,20 +197,23 @@ with tab3:
     # Create two columns
     col1, col2 = st.columns(2)
     
-    # Statement type selection in the first column
+    # User input: Selection of financial statement type
     with col1:
         statement_type = st.selectbox("Statement Type", ["Income Statement", "Balance Sheet", "Cash Flow"])
     
-    # Period selection in the second column
+    # User input: Selection of reporting period (Annual or Quarterly)
     with col2:
         period = st.selectbox("Period", ["Annual", "Quarterly"])
     
     # Display the selected financial statement based on the type and period
     if statement_type == "Income Statement":
+        # Show income statement (annual or quarterly based on user selection)
         st.write(stock.financials if period == "Annual" else stock.quarterly_financials)
+        # Show balance sheet (annual or quarterly based on user selection)
     elif statement_type == "Balance Sheet":
         st.write(stock.balance_sheet if period == "Annual" else stock.quarterly_balance_sheet)
     else:
+        # Show cash flow statement (annual or quarterly based on user selection)
         st.write(stock.cashflow if period == "Annual" else stock.quarterly_cashflow)
 
 
@@ -200,7 +221,8 @@ with tab3:
 # Monte Carlo Simulation tab
 with tab4:
     st.subheader("Monte Carlo Simulation")
-
+    
+    # Check if there is sufficient data for simulation
     if data.empty:
         st.error("No data available for Monte Carlo simulation.")
     else:
@@ -209,37 +231,50 @@ with tab4:
         
         # Number of simulations in the first column
         with col1:
-            n_simulations = st.selectbox("Number of Simulations", [200, 500, 1000])
+            n_simulations = st.selectbox("Number of Simulations", [200, 500, 1000] # Options for simulations
+                                        )
         
-        # Time horizon in the second column
+        # Time horizon for simulation in the second column
         with col2:
-            time_horizon = st.selectbox("Time Horizon (days)", [30, 60, 90])
+            time_horizon = st.selectbox("Time Horizon (days)", [30, 60, 90]
+                                       # Options for time horizon)
         
-        daily_returns = data['Close'].pct_change().dropna()
-        mean_return = daily_returns.mean()
-        std_dev = daily_returns.std()
+        # Calculate daily returns and their statistics
+        daily_returns = data['Close'].pct_change().dropna()  # Compute daily percentage change
+        mean_return = daily_returns.mean()  # Mean of daily returns
+        std_dev = daily_returns.std()  # Standard deviation of daily returns
+        
+        #Initialize an array to store simulated prices
         simulations = np.zeros((time_horizon, n_simulations))
-        last_price = data['Close'][-1]
+        last_price = data['Close'][-1]  # Get the last closing price as the starting price
 
-        for i in range(n_simulations):
-            price = last_price
-            for t in range(time_horizon):
-                price *= (1 + np.random.normal(mean_return, std_dev))
-                simulations[t, i] = price
+        # Perform Monte Carlo simulation
+        for i in range(n_simulations):  # Loop through each simulation
+            price = last_price  # Start with the last known price
+            for t in range(time_horizon):  # Simulate prices for the given time horizon
+                price *= (1 + np.random.normal(mean_return, std_dev))  # Apply random returns
+                simulations[t, i] = price  # Store simulated price
 
-        VaR_95 = np.percentile(simulations[-1], 5)
+        # Calculate Value at Risk (VaR) at 95% confidence level
+        VaR_95 = np.percentile(simulations[-1], 5)  # 5th percentile of the final simulated prices
+
+        # Plot the Monte Carlo simulation results
+        plt.figure(figsize=(10, 6))  # Set figure size
         
-
-        # Plot the simulations using the "Magma" colormap
-        plt.figure(figsize=(10, 6))
-        
-        # Use the "Magma" colormap for the simulations
+        # Use "Magma" colormap for better visualization
         cmap = plt.get_cmap("magma")
-        for i in range(n_simulations):
+        for i in range(n_simulations):  # Loop through each simulation to plot
             plt.plot(simulations[:, i], color=cmap(i / n_simulations))  # Apply colormap
 
-        # Use a light grey horizontal line instead of purple
-        current_price_line = plt.axhline(y=last_price, color='darkgrey', linewidth=2.5)
+        # Highlight the current stock price with a horizontal line
+        current_price_line = plt.axhline(
+            y=last_price, 
+            color='darkgrey', 
+            linewidth=2.5, 
+            linestyle='--', 
+            label=f'Current stock price: ${last_price:.2f}'
+        )
+
 
         plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
         plt.legend([current_price_line], [f'Current stock price: ${last_price:.2f}'])
