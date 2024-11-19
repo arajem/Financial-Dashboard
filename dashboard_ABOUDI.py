@@ -78,6 +78,8 @@ if st.sidebar.button("Update Data "):
     )
     
 
+st.sidebar.write("App made by Arajem ABOUDI - MBD 2024/25")
+
 # Load stock data for the selected symbol
 stock = yf.Ticker(stock_symbol)
 
