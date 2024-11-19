@@ -195,7 +195,7 @@ fig.update_layout(
         title="Volume", 
         overlaying="y",  # Overlay volume on the same chart
         side="right", 
-        showgrid=False, 
+        showgrid=True, 
         range=[0, data['Volume'].max() * 4]
     ),
     xaxis=dict(
