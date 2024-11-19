@@ -155,22 +155,59 @@ with tab2:
     if chart_type == "Line":
         fig.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Close Price', line=dict(color='lightblue', width=2)))  # Line color changed to blue
     else:
-        fig.add_trace(go.Candlestick(
-            x=data.index, open=data['Open'], high=data['High'], low=data['Low'], close=data['Close'], name="Candlestick",
-            increasing_line_color='green', decreasing_line_color='red'  # Changed colors for candlestick
-        ))
+       fig.add_trace(go.Candlestick(
+    x=data.index, 
+    open=data['Open'], 
+    high=data['High'], 
+    low=data['Low'], 
+    close=data['Close'], 
+    name="Candlestick",
+    increasing_line_color='green', 
+    decreasing_line_color='red'  # Changed colors for candlestick
+))
 
-    if interval in ["1d","1mo"]:
-        fig.add_trace(go.Scatter(x=data.index, y=data["SMA_50"], mode="lines", name="50-Day SMA", line=dict(color='purple', width=1.5)))  # SMA color changed to orange
+if interval in ["1d", "1mo"]:
+    fig.add_trace(go.Scatter(
+        x=data.index, 
+        y=data["SMA_50"], 
+        mode="lines", 
+        name="50-Day SMA", 
+        line=dict(color='purple', width=1.5)  # SMA color changed to purple
+    ))
 
-    fig.add_trace(go.Bar(x=data.index, y=data['Volume'], name='Volume', marker=dict(color='rgba(0, 139, 139)'), opacity=0.3, yaxis="y2"))  # Volume bar color changed
+fig.add_trace(go.Bar(
+    x=data.index, 
+    y=data['Volume'], 
+    name='Volume', 
+    marker=dict(color='rgba(0, 139, 139)'), 
+    opacity=0.3, 
+    yaxis="y2"  # Specify yaxis2 for volume
+))
 
-    fig.update_layout(
-        height=600, yaxis=dict(title="Price", showgrid=True),
-        yaxis2=dict(title="Volume", overlaying="y", side="right", showgrid=False, range=[0, data['Volume'].max()*4]),
-        xaxis=dict(title="Date", showgrid=True), title=f"{stock_symbol} Price Chart ({date_range} - Interval: {interval})"
-    )
-    st.plotly_chart(fig)
+# Update layout to ensure there’s only one x-axis
+fig.update_layout(
+    height=600, 
+    yaxis=dict(
+        title="Price", 
+        showgrid=True
+    ),
+    yaxis2=dict(
+        title="Volume", 
+        overlaying="y",  # Overlay volume on the same chart
+        side="right", 
+        showgrid=False, 
+        range=[0, data['Volume'].max() * 4]
+    ),
+    xaxis=dict(
+        title="Date",  # Single x-axis
+        showgrid=True
+    ),
+    title=f"{stock_symbol} Price Chart ({date_range} - Interval: {interval})",
+    template="plotly_white"
+)
+
+st.plotly_chart(fig)
+
     
 # Financials tab
 with tab3:
