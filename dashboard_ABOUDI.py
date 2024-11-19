@@ -164,9 +164,9 @@ with tab2:
     name="Candlestick",
     increasing_line_color='green', 
     decreasing_line_color='red'  # Changed colors for candlestick
-))
+    ))
 
-if interval in ["1d", "1mo"]:
+    if interval in ["1d", "1mo"]:
     fig.add_trace(go.Scatter(
         x=data.index, 
         y=data["SMA_50"], 
@@ -175,7 +175,7 @@ if interval in ["1d", "1mo"]:
         line=dict(color='purple', width=1.5)  # SMA color changed to purple
     ))
 
-fig.add_trace(go.Bar(
+    fig.add_trace(go.Bar(
     x=data.index, 
     y=data['Volume'], 
     name='Volume', 
@@ -184,8 +184,8 @@ fig.add_trace(go.Bar(
     yaxis="y2"  # Specify yaxis2 for volume
 ))
 
-# Update layout to ensure there’s only one x-axis
-fig.update_layout(
+    # Update layout to ensure there’s only one x-axis
+    fig.update_layout(
     height=600, 
     yaxis=dict(
         title="Price", 
@@ -204,9 +204,9 @@ fig.update_layout(
     ),
     title=f"{stock_symbol} Price Chart ({date_range} - Interval: {interval})",
     template="plotly_white"
-)
+    )
 
-st.plotly_chart(fig)
+    st.plotly_chart(fig)
 
     
 # Financials tab
