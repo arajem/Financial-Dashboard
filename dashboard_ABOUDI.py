@@ -236,8 +236,8 @@ with tab4:
         
         # Time horizon for simulation in the second column
         with col2:
-            time_horizon = st.selectbox("Time Horizon (days)", [30, 60, 90]
-                                       # Options for time horizon)
+            time_horizon = st.selectbox("Time Horizon (days)", [30, 60, 90] # Options for time horizon
+                                       )
         
         # Calculate daily returns and their statistics
         daily_returns = data['Close'].pct_change().dropna()  # Compute daily percentage change
