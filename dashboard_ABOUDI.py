@@ -80,7 +80,11 @@ if st.sidebar.button("Update Data "):
 
 st.sidebar.write("")
 st.sidebar.write("")
-st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/8/8f/Yahoo%21_Finance_logo_2021.png", caption="Source: Yahoo Finance", width=200)
+st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/8/8f/Yahoo%21_Finance_logo_2021.png", caption="Source: Yahoo Finance", width=175)
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
 st.sidebar.write("")
 st.sidebar.write("")
 st.sidebar.write("")
