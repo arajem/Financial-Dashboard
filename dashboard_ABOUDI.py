@@ -77,9 +77,15 @@ if st.sidebar.button("Update Data "):
         mime="text/csv"
     )
     
-
+#
+#
+#
+#
+#
+#
 st.sidebar.write("App made by Arajem ABOUDI - MBD 2024/25")
-st.sidebar.image('C:/Users/Source/OneDrive - IESEG/Desktop/yahoo_finance.png', width=100)
+st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/8/8f/Yahoo%21_Finance_logo_2021.png", caption="Source: Yahoo Finance", width=100)
+
 # Load stock data for the selected symbol
 stock = yf.Ticker(stock_symbol)
 
