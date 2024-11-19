@@ -260,11 +260,11 @@ First, you can choose specific sectors and stocks, tailoring your investments to
 
 
 With adjustable sliders, you set the percentage weight for each stock, giving you control over the balance of your portfolio. 
-Once configured, you’ll see a visual breakdown of your portfolio allocation with a pie chart, as well as a performance graph 
+Once configured, you will see a visual breakdown of your portfolio allocation with a pie chart, as well as a performance graph 
 that tracks the portfolio’s cumulative return over time. 
 
 This tool provides a clear and interactive way to explore how your 
-selected investments perform together, helping you make informed investment decisions.
+selected investments perform together, helping the user to make informed investment decisions.
 """)  
 
     # Fetch S&P 500 companies and their sectors from Wikipedia
