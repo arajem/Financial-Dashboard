@@ -30,7 +30,6 @@ symbols, company_data = load_sp500_symbols()
 
 
 # Define dashboard Sidebar and layout
-st.set_page_config(page_title="Financial Dashboard - Arajem Aboudi", layout="wide")
 st.sidebar.title("📈 Your All-in-One Toolkit for Smarter Investing 📉")
 
 st.sidebar.subheader("Make your selection")
