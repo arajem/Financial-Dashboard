@@ -1,8 +1,18 @@
 ###############################################################################
-# FINANCIAL DASHBOARD  - Arajem ABOUDI
 # Course of Financial Programming - Professor Minh Trung Hoai PHAN
+
+# FINANCIAL DASHBOARD  - Arajem ABOUDI
+# Your All-in-One Toolkit for Smarter Investing
+
 ###############################################################################
 
+
+###############################################################################
+# Source:   fin_dashboard_revised.py, https://youtu.be/p2pXpcXPoGk?si=jNwo_5XMAbXaXbaW, https://youtu.be/Yk-unX4KnV4?si=nFPFCVqSNtH9dBI8, 
+#           https://matplotlib.org/stable/users/explain/colors/colormaps.html, https://stock-dashboard-sp500.streamlit.app/,
+#           https://youtu.be/QdPCaHTnpnc?si=DC5Ps3rtztS6lyRh, Yahoo Finance 
+###############################################################################
+            
 # Libraries
 import streamlit as st
 import yfinance as yf
